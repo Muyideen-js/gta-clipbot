@@ -197,23 +197,51 @@ def main(argv: list[str] | None = None) -> int:
         return (do_upload and not quota_hit and uploads < args.max_uploads
                 and (not daily_cap or daily_count() < daily_cap))
 
-    # Clips that don't get uploaded are copied here with a text file to copy-paste from.
-    ready_dir = os.environ.get("READY_DIR", "").strip()
+    # Every clip gets its own folder on the PC:
+    #   CLIPS_DIR/Post by hand/<time - title>/     clips the bot did NOT upload
+    #   CLIPS_DIR/Uploaded by bot/<time - title>/  copies of what went to YouTube
+    clips_root = os.environ.get("CLIPS_DIR", "").strip()
 
-    def save_for_hand_posting(path: str, clip: dict, yt_title: str) -> None:
-        if not ready_dir:
+    def save_clip_folder(path: str, clip: dict, yt_title: str, thumb: str | None = None) -> None:
+        if not clips_root:
             return
-        os.makedirs(ready_dir, exist_ok=True)
-        stem = f"{dt.datetime.now():%m%d-%H%M}_{clip['id'][-6:]}"
-        shutil.copy2(path, os.path.join(ready_dir, stem + ".mp4"))
+        uploaded = clip["youtube"]["status"] == "uploaded"
+        group = "Uploaded by bot" if uploaded else "Post by hand"
+        when = dt.datetime.now()
+        safe = re.sub(r'[<>:"/\\|?*#]+', "", clip.get("title", "clip")).encode("ascii", "ignore").decode()
+        safe = re.sub(r"\s+", " ", safe).strip()[:60] or "clip"
+        folder = os.path.join(clips_root, group, f"{when:%d %b %H-%M} - {safe}")
+        k = 2
+        while os.path.exists(folder):
+            folder = os.path.join(clips_root, group, f"{when:%d %b %H-%M} - {safe} ({k})")
+            k += 1
+        os.makedirs(folder)
+        shutil.copy2(path, os.path.join(folder, "video.mp4"))
+        if thumb and os.path.exists(thumb):
+            shutil.copy2(thumb, os.path.join(folder, "thumbnail.jpg"))
         desc = clip.get("description", "").strip()
         if credit:
-            desc += f"\n\n{credit}"
+            desc += "\n\n" + credit
         desc += "\n\n" + " ".join("#" + t for t in clip.get("hashtags", []))
-        with open(os.path.join(ready_dir, stem + ".txt"), "w", encoding="utf-8") as fh:
-            fh.write(f"TITLE:\n{yt_title}\n\nDESCRIPTION:\n{desc}\n")
-        clip["ready_file"] = stem + ".mp4"
-        log(f"      saved for posting by hand: {stem}.mp4")
+        if uploaded:
+            yt = clip["youtube"]
+            info = [
+                "Uploaded by the bot. Don't post this one by hand.",
+                "",
+                f"Title: {yt_title}",
+                f"Goes public: {yt.get('goes_live') or 'now'}",
+                f"Edit in Studio: {yt['studio_url']}",
+                f"Watch: {yt.get('watch_url', '')}",
+            ]
+            with open(os.path.join(folder, "youtube.txt"), "w", encoding="utf-8") as fh:
+                fh.write("\n".join(info) + "\n")
+        else:
+            with open(os.path.join(folder, "title.txt"), "w", encoding="utf-8") as fh:
+                fh.write(yt_title + "\n")
+            with open(os.path.join(folder, "description.txt"), "w", encoding="utf-8") as fh:
+                fh.write(desc + "\n")
+        clip["pc_folder"] = folder
+        log(f"      saved to: {group} / {os.path.basename(folder)}")
 
     def publish_upload(path: str, title: str, description: str, hashtags: list[str], kind: str) -> dict:
         """Upload with the chosen publish mode. Returns the manifest's youtube block."""
@@ -298,8 +326,7 @@ def main(argv: list[str] | None = None) -> int:
                     except Exception as exc:
                         lv["youtube"] = {"status": "error", "error": str(exc)[:300]}
                         log(f"      upload failed: {exc}")
-                if lv["youtube"]["status"] != "uploaded":
-                    save_for_hand_posting(lpath, lv, cap["title"])
+                save_clip_folder(lpath, lv, cap["title"], thumb)
                 if tg:
                     try:
                         yt = lv["youtube"]
@@ -371,8 +398,7 @@ def main(argv: list[str] | None = None) -> int:
                         clip["youtube"] = {"status": "error", "error": str(exc)[:300]}
                         log(f"      upload failed: {exc}")
 
-                if clip["youtube"]["status"] != "uploaded":
-                    save_for_hand_posting(base + ".mp4", clip, yt_title)
+                save_clip_folder(base + ".mp4", clip, yt_title, stills[1] if len(stills) > 1 else None)
 
                 if tg:
                     try:

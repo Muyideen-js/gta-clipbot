@@ -113,7 +113,7 @@ def process(piece_ts: str, args, extra: list[str]) -> None:
            "--publish", args.publish, "--max-uploads", str(args.max_uploads), *extra]
     res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     for ln in res.stdout.splitlines():
-        if any(k in ln for k in ("title", "uploaded", "goes public", "failed", "Done", "quota", "best-of")):
+        if any(k in ln for k in ("title (", "uploaded:", "saved to", "Done", "quota", "best-of", "clip failed")):
             log("   " + ln.strip())
     if res.returncode != 0:
         log("   pipeline error: " + res.stderr.strip()[-400:])
