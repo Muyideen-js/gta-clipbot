@@ -129,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--long-minutes", type=float, default=0,
                     help="also build a 'best of' 16:9 video this long (0 = off)")
     ap.add_argument("--long-segment", type=float, default=60, help="seconds per moment in the long video")
+    ap.add_argument("--long-whole", action="store_true",
+                    help="the input already IS the best-of (built by tools/smart_clip.py); just caption and post it")
     ap.add_argument("--publish", choices=["schedule", "now", "private"], default="schedule",
                     help="schedule = spread posts across the day, now = public at once, private = drafts")
     ap.add_argument("--work", default="work")
@@ -298,28 +300,44 @@ def main(argv: list[str] | None = None) -> int:
                                     "width": info.width, "height": info.height})
 
         # Long "best of" first, so it gets an upload slot before the Shorts use the quota.
-        if args.long_minutes and info.duration >= args.long_minutes * 60 * 1.3:
+        if args.long_whole or (args.long_minutes and info.duration >= args.long_minutes * 60 * 1.3):
             lv = {"id": f"{run_id}-long-{len(manifest.get('long', [])) + 1}", "source": name,
                   "youtube": {"status": "skipped"}, "telegram": False}
             try:
-                log(f"  building {args.long_minutes:.0f}-min best-of")
-                segs = longform.pick_segments(info, args.long_minutes, args.long_segment)
                 lpath = os.path.join(out_dir, f"gta6_{lv['id']}.mp4")
-                total = longform.build(info, segs, args.long_segment, lpath)
+                if args.long_whole:
+                    # Pre-built reel: chapter start times come from a sidecar file.
+                    shutil.copy2(src, lpath)
+                    total = info.duration
+                    try:
+                        with open(src + ".chapters.json", encoding="utf-8") as fh:
+                            chapter_starts = json.load(fh)
+                    except (OSError, ValueError):
+                        chapter_starts = [0.0]
+                    segs = [detect.Highlight(0.0, min(total / 2, 30.0), 1.0, "massive")]
+                    log(f"  posting prebuilt best-of ({total / 60:.1f} min)")
+                else:
+                    log(f"  building {args.long_minutes:.0f}-min best-of")
+                    segs = longform.pick_segments(info, args.long_minutes, args.long_segment)
+                    total = longform.build(info, segs, args.long_segment, lpath)
+                    chapter_starts, acc = [], 0.0
+                    for x in segs:
+                        chapter_starts.append(acc)
+                        acc += min(args.long_segment, info.duration - x.start)
                 stills = cut.frames(lpath, total, lpath[:-4] + "_f", count=4, width=640)
                 cap = captions.write_caption({"kind": "long", "source": name, "start": 0,
                                               "duration": total, "intensity": "massive"}, stills)
                 best = max(segs, key=lambda s: s.score)
-                thumb = longform.thumbnail(info, best, cap["thumb_text"], lpath[:-4] + "_thumb.jpg")
+                thumb_src = media.probe(lpath) if args.long_whole else info
+                thumb = longform.thumbnail(thumb_src, best, cap["thumb_text"], lpath[:-4] + "_thumb.jpg")
                 lv.update(title=cap["title"], description=cap["description"], hashtags=cap["hashtags"],
-                          thumb_text=cap["thumb_text"], duration=round(total, 1), segments=len(segs),
+                          thumb_text=cap["thumb_text"], duration=round(total, 1), segments=len(chapter_starts),
                           size_mb=round(os.path.getsize(lpath) / 1048576, 1))
                 log(f"      {total / 60:.1f} min, title: {cap['title']}")
                 if can_upload():
                     chapters = "\n".join(
-                        f"{int(sum(min(args.long_segment, info.duration - x.start) for x in segs[:i]) // 60)}:"
-                        f"{int(sum(min(args.long_segment, info.duration - x.start) for x in segs[:i]) % 60):02d}"
-                        f" Moment {i + 1}" for i in range(len(segs))) if len(segs) >= 3 else ""
+                        f"{int(t // 60)}:{int(t % 60):02d} Moment {i + 1}"
+                        for i, t in enumerate(chapter_starts)) if len(chapter_starts) >= 3 else ""
                     desc = f"{cap['description']}\n\n{chapters}" if chapters else cap["description"]
                     try:
                         lv["youtube"] = publish_upload(lpath, cap["title"], desc, cap["hashtags"], "long")

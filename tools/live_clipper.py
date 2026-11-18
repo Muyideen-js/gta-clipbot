@@ -70,7 +70,12 @@ def load_env() -> None:
 
 
 def ytdlp(*args: str) -> str:
-    res = subprocess.run([sys.executable, "-m", "yt_dlp", "--no-warnings", *args],
+    loc = ["--ffmpeg-location", os.environ["FFMPEG"]] if os.environ.get("FFMPEG") else []
+    # If YouTube says "confirm you're not a bot", a cookies.txt export placed here fixes it.
+    cookies = os.path.join(os.path.expanduser("~"), ".clipbot", "cookies.txt")
+    if os.path.exists(cookies):
+        loc += ["--cookies", cookies]
+    res = subprocess.run([sys.executable, "-m", "yt_dlp", "--no-warnings", *loc, *args],
                          capture_output=True, text=True, encoding="utf-8", errors="replace")
     if res.returncode != 0:
         raise RuntimeError(res.stderr.strip()[-600:])
@@ -187,10 +192,17 @@ def main() -> int:
                 jobs.put(p)
 
     while True:
-        try:
-            src = stream_inputs(args.url, args.quality)
-        except Exception as exc:
-            log(f"Couldn't get the stream address: {exc}")
+        src = None
+        for attempt in range(30):          # keep trying for up to ~30 minutes
+            try:
+                src = stream_inputs(args.url, args.quality)
+                break
+            except Exception as exc:
+                msg = str(exc).strip().splitlines()[-1] if str(exc).strip() else "unknown error"
+                log(f"Couldn't get the stream address ({msg[:120]}). Trying again in 1 min...")
+                time.sleep(60)
+        if not src:
+            log("Gave up reconnecting after 30 minutes.")
             break
         log(f"Recording live at up to {args.quality}p (pieces of {args.chunk_min:.0f} min). "
             "Leave this window open. Ctrl+C stops.")
