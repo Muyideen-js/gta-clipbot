@@ -1,0 +1,176 @@
+name: Clip pipeline
+
+# Three ways to start a run:
+#   1. push a video into inbox/          (files under 100 MB, GitHub's per-file limit)
+#   2. publish a GitHub Release with the video attached   (up to 2 GB per file)
+#   3. "Run workflow" (or the dashboard) with a video link or an inbox path
+on:
+  push:
+    branches: [main]
+    paths: ["inbox/**"]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      video_url:
+        description: "Video link: finished YouTube/Twitch stream, Google Drive, Dropbox or direct"
+        required: false
+        default: ""
+      inbox_path:
+        description: "Or a file already in the repo, e.g. inbox/session1.mp4"
+        required: false
+        default: ""
+      clips:
+        description: "Clips per video"
+        required: false
+        default: "5"
+      clip_seconds:
+        description: "Clip length in seconds"
+        required: false
+        default: "30"
+      layout:
+        description: "crop = fill screen, blur = full frame over blurred fill"
+        type: choice
+        options: [crop, blur]
+        default: crop
+      upload:
+        description: "Upload to YouTube as private"
+        type: boolean
+        default: true
+      max_uploads:
+        description: "Max YouTube uploads this run (default API quota allows about 6 a day)"
+        required: false
+        default: "6"
+      long_minutes:
+        description: "Also make a best-of 16:9 video this many minutes long (0 = off)"
+        required: false
+        default: "0"
+      publish:
+        description: "schedule = YouTube posts them across the day, now = public at once, private = drafts"
+        type: choice
+        options: [schedule, now, private]
+        default: schedule
+
+permissions:
+  contents: write   # commit the manifest the dashboard reads
+  models: read      # GitHub Models captions with GITHUB_TOKEN
+
+concurrency:
+  group: clip-pipeline
+  cancel-in-progress: false
+
+jobs:
+  clip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CLIPS: ${{ inputs.clips || vars.CLIPS_PER_VIDEO || '5' }}
+      CLIP_SECONDS: ${{ inputs.clip_seconds || vars.CLIP_SECONDS || '30' }}
+      LAYOUT: ${{ inputs.layout || vars.LAYOUT || 'crop' }}
+      UPLOAD: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
+      MAX_UPLOADS: ${{ inputs.max_uploads || vars.MAX_UPLOADS || '6' }}
+      LONG_MINUTES: ${{ inputs.long_minutes || vars.LONG_MINUTES || '0' }}
+      PUBLISH: ${{ inputs.publish || vars.PUBLISH_MODE || 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Install ffmpeg
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null
+          fi
+          fc-list | grep -qi dejavu || sudo apt-get install -y -qq fonts-dejavu-core >/dev/null
+          ffmpeg -version | head -1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -q -r requirements.txt
+
+      - name: Find videos to process
+        id: inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          INBOX_PATH: ${{ inputs.inbox_path }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          mkdir -p work/in
+          : > work/inputs.txt
+          case "$EVENT" in
+            push)
+              # Every file added or changed under inbox/ in this push.
+              jq -r '.commits[] | (.added + .modified)[]' "$GITHUB_EVENT_PATH" \
+                | grep '^inbox/' | sort -u | while read -r f; do
+                  [ -f "$f" ] && echo "$f" >> work/inputs.txt
+                done ;;
+            release)
+              for ext in mp4 mov mkv webm m4v avi MP4 MOV MKV; do
+                gh release download "$TAG" -D work/in --pattern "*.$ext" --skip-existing 2>/dev/null || true
+              done
+              find work/in -type f >> work/inputs.txt ;;
+            workflow_dispatch)
+              if [ -n "$INBOX_PATH" ]; then echo "$INBOX_PATH" >> work/inputs.txt; fi ;;
+          esac
+          echo "Inputs:"; cat work/inputs.txt
+          echo "inbox=$(grep '^inbox/' work/inputs.txt | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Detect, cut, caption, upload, notify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CAPTION_MODEL: ${{ vars.CAPTION_MODEL }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          VIDEO_URL: ${{ inputs.video_url }}
+          YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
+          POST_TZ: ${{ vars.POST_TZ }}
+          SHORTS_PER_DAY: ${{ vars.SHORTS_PER_DAY }}
+          POST_START_HOUR: ${{ vars.POST_START_HOUR }}
+          POST_END_HOUR: ${{ vars.POST_END_HOUR }}
+          LONG_POST_HOUR: ${{ vars.LONG_POST_HOUR }}
+          CREDIT_LINE: ${{ vars.CREDIT_LINE }}
+        run: |
+          python -m clipper.run \
+            --inputs work/inputs.txt --url "$VIDEO_URL" \
+            --clips "$CLIPS" --clip-seconds "$CLIP_SECONDS" --layout "$LAYOUT" \
+            --upload "$UPLOAD" --max-uploads "$MAX_UPLOADS" --long-minutes "$LONG_MINUTES" --publish "$PUBLISH"
+
+      - name: Keep clips for 3 days (download from the run page)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clips-${{ github.run_id }}
+          path: work/clips/*.mp4
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save manifest and clear processed inbox files
+        if: always()
+        env:
+          INBOX_FILES: ${{ steps.inputs.outputs.inbox }}
+          KEEP_INBOX: ${{ vars.KEEP_INBOX }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -d manifests ] && git add manifests
+          if [ "$KEEP_INBOX" != "true" ]; then
+            for f in $INBOX_FILES; do [ -f "$f" ] && git rm -q "$f"; done
+          fi
+          git diff --cached --quiet && { echo "Nothing to commit"; exit 0; }
+          git commit -q -m "Clips from run ${{ github.run_id }} [skip ci]"
+          for i in 1 2 3; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          echo "::warning::Could not push the manifest"

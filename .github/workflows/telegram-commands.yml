@@ -1,0 +1,33 @@
+name: Telegram commands
+
+# Checks your Telegram bot for new messages every 5 minutes and acts on them.
+# GitHub may delay scheduled runs by a few minutes when it's busy.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write     # start the clip pipeline
+  contents: read
+
+concurrency:
+  group: telegram-commands
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: clipper
+      - name: Read and answer messages
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: |
+          if [ -z "$TG_BOT_TOKEN" ] || [ -z "$TG_CHAT_ID" ]; then echo "Telegram secrets not set"; exit 0; fi
+          python3 -m clipper.commands
