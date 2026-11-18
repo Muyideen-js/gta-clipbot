@@ -201,11 +201,31 @@ def main() -> int:
                                 *src, "-c", "copy",
                                 "-f", "segment", "-segment_time", str(int(args.chunk_min * 60)),
                                 "-segment_start_number", str(start_no), "-reset_timestamps", "1",
-                                os.path.join(work, "piece_%03d.ts")])
+                                os.path.join(work, "piece_%03d.ts"),
+                                "-progress", "pipe:1", "-nostats"],
+                               stdout=subprocess.PIPE, text=True, encoding="utf-8", errors="replace")
+        # Watchdog: ffmpeg reports its position every second. If it stops moving
+        # (the connection dropped and ffmpeg hung), restart the recorder.
+        progress = {"pos": "", "at": time.time()}
+
+        def watch(proc=rec, state=progress):
+            for ln in proc.stdout:
+                if ln.startswith("out_time_us=") and ln != state["pos"]:
+                    state["pos"], state["at"] = ln, time.time()
+
+        threading.Thread(target=watch, daemon=True).start()
         try:
             while rec.poll() is None:
-                time.sleep(20)
+                time.sleep(15)
                 queue_finished()
+                if time.time() - progress["at"] > 90:
+                    log("Recording stopped moving for 90 s (connection problem). Restarting the recorder...")
+                    rec.terminate()
+                    try:
+                        rec.wait(timeout=20)
+                    except subprocess.TimeoutExpired:
+                        rec.kill()
+                    break
         except KeyboardInterrupt:
             log("Stopping recording...")
             rec.terminate()
@@ -215,7 +235,7 @@ def main() -> int:
         if live_status(args.url) != "is_live":
             log("Stream ended.")
             break
-        log("Recording dropped (the address expires every few hours), reconnecting...")
+        log("Reconnecting to the stream...")
 
     queue_finished(all_done=True)
     jobs.put(None)

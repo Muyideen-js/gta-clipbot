@@ -123,7 +123,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--url", default="", help="download this video first")
     ap.add_argument("--clips", type=int, default=5, help="clips per source video")
     ap.add_argument("--clip-seconds", type=float, default=30)
-    ap.add_argument("--layout", choices=["crop", "blur"], default="crop")
+    ap.add_argument("--layout", choices=["crop", "blur", "zoom"], default=os.environ.get("LAYOUT") or "crop")
     ap.add_argument("--upload", default="true")
     ap.add_argument("--max-uploads", type=int, default=6)
     ap.add_argument("--long-minutes", type=float, default=0,
@@ -240,6 +240,17 @@ def main(argv: list[str] | None = None) -> int:
                 fh.write(yt_title + "\n")
             with open(os.path.join(folder, "description.txt"), "w", encoding="utf-8") as fh:
                 fh.write(desc + "\n")
+        # TikTok caption (posted by hand for every clip, including ones the bot put on YouTube).
+        tt_tags = ["fyp", "foryou", "GTA6", "gta6gameplay", "gaming"]
+        extra = [t.strip() for t in (os.environ.get("EXTRA_TAGS") or "").split(",") if t.strip()]
+        for t in [*extra, *clip.get("hashtags", [])]:
+            if t.lower() not in {x.lower() for x in tt_tags} and t.lower() != "shorts":
+                tt_tags.append(t)
+        tt_title = re.sub(r"\s*#shorts\b", "", yt_title, flags=re.I).strip()
+        tt = f"{tt_title}\n\n{credit}\n\n" if credit else f"{tt_title}\n\n"
+        tt += " ".join("#" + t for t in tt_tags[:9])
+        with open(os.path.join(folder, "tiktok.txt"), "w", encoding="utf-8") as fh:
+            fh.write(tt + "\n")
         clip["pc_folder"] = folder
         log(f"      saved to: {group} / {os.path.basename(folder)}")
 

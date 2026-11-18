@@ -24,8 +24,9 @@ def _crop_box(w: int, h: int) -> tuple[int, int, int, int]:
 
 def cut(info: media.VideoInfo, start: float, duration: float, out_path: str,
         layout: str = "crop") -> str:
-    """layout="crop": centre crop, fills the screen.
-    layout="blur": whole 16:9 frame in the middle over a blurred fill, keeps HUD/minimap."""
+    """layout="blur": the WHOLE 16:9 frame, sharp, in the middle over a blurred fill.
+    layout="zoom": like blur but the middle 4:3 of the frame, so the action is bigger.
+    layout="crop": a narrow centre strip that fills the screen (loses the sides)."""
     # Trim black letterbox bars first, so they don't end up inside the Short.
     pre = ""
     w, h = info.width, info.height
@@ -33,12 +34,20 @@ def cut(info: media.VideoInfo, start: float, duration: float, out_path: str,
         bw, bh, bx, by = info.box
         pre = f"crop={bw}:{bh}:{bx}:{by},"
         w, h = bw, bh
-    if layout == "blur":
+    if layout in ("blur", "zoom"):
+        # zoom: keep the middle 4:3 of the picture, so the foreground is ~33% taller.
+        mid = ""
+        if layout == "zoom":
+            zw = int(h * 4 / 3) - int(h * 4 / 3) % 2
+            if zw < w:
+                mid = f"crop={zw}:{h}:{(w - zw) // 2}:0,"
         graph = (
-            f"[0:v]{pre}split=2[a][b];"
-            f"[a]scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
-            f"crop={OUT_W}:{OUT_H},boxblur=20:2[bg];"
-            f"[b]scale={OUT_W}:-2[fg];"
+            f"[0:v]{pre}{mid}split=2[a][b];"
+            # Background: blur at low resolution (fast), darken slightly, scale up.
+            f"[a]scale=270:480:force_original_aspect_ratio=increase,crop=270:480,"
+            f"boxblur=8:2,eq=brightness=-0.08:saturation=1.2,scale={OUT_W}:{OUT_H}[bg];"
+            # Foreground: full width, high-quality scaling plus light sharpening.
+            f"[b]scale={OUT_W}:-2:flags=lanczos,unsharp=5:5:0.6[fg];"
             f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1,fps=30[v]"
         )
     else:
@@ -52,7 +61,7 @@ def cut(info: media.VideoInfo, start: float, duration: float, out_path: str,
         # instead of letting the audio slide ahead (fps=30 above does the same for frames).
         "-af", "aresample=async=1:first_pts=0",
         "-c:v", "libx264", "-preset", os.environ.get("X264_PRESET", "veryfast"),
-        "-crf", os.environ.get("X264_CRF", "21"), "-pix_fmt", "yuv420p",
+        "-crf", os.environ.get("X264_CRF", "19"), "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "160k", "-ar", "48000",
         "-movflags", "+faststart", out_path,
     ]
