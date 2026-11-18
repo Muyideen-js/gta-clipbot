@@ -23,6 +23,11 @@ class Schedule:
         self.start = float(os.environ.get("POST_START_HOUR") or 10)
         self.end = float(os.environ.get("POST_END_HOUR") or 22)
         self.long_hour = float(os.environ.get("LONG_POST_HOUR") or 19)
+        # POST_INTERVAL_MIN=30 -> a Short every 30 minutes inside the window, instead of N per day.
+        self.interval = float(os.environ.get("POST_INTERVAL_MIN") or 0)
+        if self.interval:
+            self.per_day = int((self.end - self.start) * 60 // self.interval) + 1
+        self.lead = dt.timedelta(minutes=float(os.environ.get("POST_LEAD_MIN") or 30))
         self.taken: list[dict] = []
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:
@@ -58,10 +63,13 @@ class Schedule:
                     continue
                 n = self.per_day
                 span = max(self.end - self.start, 0)
-                hours = [self.start + (span * i / (n - 1) if n > 1 else 0) for i in range(n)]
+                if self.interval:
+                    hours = [self.start + i * self.interval / 60 for i in range(n)]
+                else:
+                    hours = [self.start + (span * i / (n - 1) if n > 1 else 0) for i in range(n)]
             for h in hours:
                 t = self._at(day, h, self.tz)
-                if t < now + LEAD or self._busy(t.astimezone(dt.timezone.utc)):
+                if t < now + self.lead or self._busy(t.astimezone(dt.timezone.utc)):
                     continue
                 self.taken.append({"at": t.astimezone(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
                                    "kind": kind, "label": label[:80]})

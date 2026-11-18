@@ -128,6 +128,7 @@ def main() -> int:
     ap.add_argument("--long-minutes", type=float, default=30, help="best-of length at the end (0 = off)")
     ap.add_argument("--publish", choices=["schedule", "now", "private"], default="schedule")
     ap.add_argument("--max-uploads", type=int, default=6)
+    ap.add_argument("--resume", default="", help="continue in an earlier recording folder")
     ap.add_argument("--quality", type=int, default=1080, choices=[720, 1080],
                     help="1080 uses about 2.5 GB of data per hour, 720 about 1.3 GB")
     args = ap.parse_args()
@@ -139,9 +140,13 @@ def main() -> int:
                  "For a finished stream use: python -m clipper.run --url <link>")
 
     vid = args.url.rstrip("/").split("=")[-1].split("/")[-1][:20]
-    work = os.path.join(ROOT, "work", "live", f"{dt.datetime.now():%Y%m%d-%H%M}-{vid}")
+    work = args.resume or os.path.join(ROOT, "work", "live", f"{dt.datetime.now():%Y%m%d-%H%M}-{vid}")
     os.makedirs(work, exist_ok=True)
     log(f"Recording into {work}")
+    # Resuming: earlier pieces are complete; rename them so they don't collide with new ones.
+    old = sorted(glob.glob(os.path.join(work, "piece_*.ts")))
+    for p in old:
+        os.replace(p, p.replace("piece_", "earlier_piece_"))
 
     jobs: queue.Queue = queue.Queue()
     shorts = ["--clips", str(args.shorts_per_chunk), "--clip-seconds", str(args.clip_seconds)]
@@ -161,6 +166,12 @@ def main() -> int:
     queued: set[str] = set()
     ff = os.environ.get("FFMPEG", "ffmpeg")
     start_no = 0
+
+    for p in sorted(glob.glob(os.path.join(work, "earlier_piece_*.ts"))):
+        if os.path.getsize(p) > 5_000_000:
+            queued.add(p)
+            log(f"Earlier recording {os.path.basename(p)} queued for clipping")
+            jobs.put(p)
 
     def queue_finished(all_done: bool = False):
         pieces = sorted(glob.glob(os.path.join(work, "piece_*.ts")))

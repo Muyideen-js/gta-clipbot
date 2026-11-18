@@ -54,16 +54,24 @@ def _clean_title(t: str) -> str:
     return t[:95]
 
 
+LEAD_TAGS = ["GTA6", "Shorts", "GTAVI"]   # the first three show above the title
+
+
 def _tags(raw) -> list[str]:
-    tags = []
-    for t in raw or []:
+    """Big discovery tags first, then the clip-specific ones, then EXTRA_TAGS
+    (e.g. the streamer's name). Capped at 8: YouTube ignores spammy hashtag lists."""
+    extra = [t for t in (os.environ.get("EXTRA_TAGS") or "").split(",") if t.strip()]
+    tags: list[str] = []
+    for t in [*LEAD_TAGS, *(raw or []), *extra, *BASE_TAGS]:
         t = re.sub(r"[^A-Za-z0-9_]", "", str(t).lstrip("#"))
         if t and t.lower() not in {x.lower() for x in tags}:
             tags.append(t)
-    for t in BASE_TAGS:
-        if t.lower() not in {x.lower() for x in tags}:
-            tags.append(t)
-    return tags[:10]
+    keep = tags[:7]
+    for t in extra:   # always keep the streamer tag
+        t = re.sub(r"[^A-Za-z0-9_]", "", t)
+        if t and t.lower() not in {x.lower() for x in keep}:
+            keep.append(t)
+    return keep[:8]
 
 
 def _template(context: dict) -> dict:
