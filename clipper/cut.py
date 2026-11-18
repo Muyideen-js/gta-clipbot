@@ -48,6 +48,9 @@ def cut(info: media.VideoInfo, start: float, duration: float, out_path: str,
     args = [
         "-ss", f"{start:.2f}", "-i", info.path, "-t", f"{duration:.2f}",
         "-filter_complex", graph, "-map", "[v]", "-map", "0:a:0?",
+        # Keep sound on the video's clock: fill any gaps in the recording with silence
+        # instead of letting the audio slide ahead (fps=30 above does the same for frames).
+        "-af", "aresample=async=1:first_pts=0",
         "-c:v", "libx264", "-preset", os.environ.get("X264_PRESET", "veryfast"),
         "-crf", os.environ.get("X264_CRF", "21"), "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "160k", "-ar", "48000",

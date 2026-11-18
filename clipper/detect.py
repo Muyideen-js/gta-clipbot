@@ -38,7 +38,9 @@ def _envelope(path: str) -> np.ndarray:
     """Return loudness in dB, one value per HOP seconds."""
     proc = subprocess.run(
         [media.FFMPEG, "-hide_banner", "-nostdin", "-v", "error", "-i", path,
-         "-vn", "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"],
+         # aresample=async fills gaps (dropped live-stream segments) with silence,
+         # so analysis time stays equal to video time.
+         "-vn", "-af", "aresample=async=1:first_pts=0", "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"],
         capture_output=True,
     )
     if proc.returncode != 0:

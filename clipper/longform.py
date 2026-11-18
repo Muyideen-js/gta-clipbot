@@ -33,7 +33,7 @@ def build(info: media.VideoInfo, segs: list[detect.Highlight], seg_seconds: floa
               f"fade=t=in:st=0:d=0.4,fade=t=out:st={max(dur - 0.4, 0):.2f}:d=0.4")
         args = ["-ss", f"{h.start:.2f}", "-i", info.path, "-t", f"{dur:.2f}", "-vf", vf]
         if info.has_audio:
-            args += ["-af", f"afade=t=in:d=0.4,afade=t=out:st={max(dur - 0.4, 0):.2f}:d=0.4",
+            args += ["-af", f"aresample=async=1:first_pts=0,afade=t=in:d=0.4,afade=t=out:st={max(dur - 0.4, 0):.2f}:d=0.4",
                      "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-ac", "2"]
         args += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-pix_fmt", "yuv420p", p]
         media.run(args)
