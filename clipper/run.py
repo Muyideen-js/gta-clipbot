@@ -212,7 +212,7 @@ def main(argv: list[str] | None = None) -> int:
             manifest["sources"].append({"name": name, "error": str(exc)})
             continue
         log(f"  {info.width}x{info.height}, {info.duration:.0f}s, audio={info.has_audio}")
-        highlights = detect.find_highlights(info, args.clips, args.clip_seconds)
+        highlights = detect.find_highlights(info, args.clips, args.clip_seconds) if args.clips > 0 else []
         log(f"  highlights at: {', '.join(f'{h.peak:.0f}s' for h in highlights)}")
         manifest["sources"].append({"name": name, "duration": round(info.duration, 1),
                                     "width": info.width, "height": info.height})

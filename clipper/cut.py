@@ -26,17 +26,24 @@ def cut(info: media.VideoInfo, start: float, duration: float, out_path: str,
         layout: str = "crop") -> str:
     """layout="crop": centre crop, fills the screen.
     layout="blur": whole 16:9 frame in the middle over a blurred fill, keeps HUD/minimap."""
+    # Trim black letterbox bars first, so they don't end up inside the Short.
+    pre = ""
+    w, h = info.width, info.height
+    if info.box:
+        bw, bh, bx, by = info.box
+        pre = f"crop={bw}:{bh}:{bx}:{by},"
+        w, h = bw, bh
     if layout == "blur":
         graph = (
-            f"[0:v]split=2[a][b];"
+            f"[0:v]{pre}split=2[a][b];"
             f"[a]scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
             f"crop={OUT_W}:{OUT_H},boxblur=20:2[bg];"
             f"[b]scale={OUT_W}:-2[fg];"
             f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1,fps=30[v]"
         )
     else:
-        cw, ch, cx, cy = _crop_box(info.width, info.height)
-        graph = f"[0:v]crop={cw}:{ch}:{cx}:{cy},scale={OUT_W}:{OUT_H},setsar=1,fps=30[v]"
+        cw, ch, cx, cy = _crop_box(w, h)
+        graph = f"[0:v]{pre}crop={cw}:{ch}:{cx}:{cy},scale={OUT_W}:{OUT_H},setsar=1,fps=30[v]"
 
     args = [
         "-ss", f"{start:.2f}", "-i", info.path, "-t", f"{duration:.2f}",

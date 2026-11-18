@@ -21,6 +21,7 @@ class VideoInfo:
     width: int
     height: int
     has_audio: bool
+    box: tuple[int, int, int, int] | None = None   # picture area without black bars (w, h, x, y)
 
 
 def run(args: list[str], capture: bool = False) -> subprocess.CompletedProcess:
@@ -48,4 +49,30 @@ def probe(path: str) -> VideoInfo:
     if re.search(r"rotate\s*:\s*-?(90|270)|rotation of -?(90|270)", text):
         width, height = height, width
     has_audio = bool(re.search(r"Stream #.*?Audio:", text))
-    return VideoInfo(path, duration, width, height, has_audio)
+    info = VideoInfo(path, duration, width, height, has_audio)
+    info.box = content_box(info)
+    return info
+
+
+def content_box(info: VideoInfo) -> tuple[int, int, int, int] | None:
+    """Find black letterbox bars by sampling a few points of the video.
+    Returns (w, h, x, y) of the real picture, or None if there are no bars."""
+    from collections import Counter
+    found: Counter = Counter()
+    for frac in (0.25, 0.5, 0.75):
+        t = max(info.duration * frac - 1, 0)
+        res = subprocess.run([FFMPEG, "-hide_banner", "-nostdin", "-ss", f"{t:.1f}", "-i", info.path,
+                              "-t", "2", "-vf", "cropdetect=limit=24:round=2:reset=0", "-an", "-f", "null", "-"],
+                             capture_output=True)
+        m = re.findall(r"crop=(\d+):(\d+):(\d+):(\d+)", res.stderr.decode(errors="replace"))
+        if m:
+            found[tuple(int(v) for v in m[-1])] += 1
+    if not found:
+        return None
+    w, h, x, y = found.most_common(1)[0][0]
+    # Ignore tiny trims and implausible results (e.g. a fully dark scene).
+    if h < info.height * 0.5 or w < info.width * 0.5:
+        return None
+    if info.height - h < info.height * 0.04 and info.width - w < info.width * 0.04:
+        return None
+    return (w, h, x, y)
