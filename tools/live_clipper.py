@@ -146,7 +146,10 @@ def main() -> int:
     # Resuming: earlier pieces are complete; rename them so they don't collide with new ones.
     stamp = f"{dt.datetime.now():%H%M%S}"
     for p in sorted(glob.glob(os.path.join(work, "piece_*.ts"))):
-        os.replace(p, os.path.join(work, f"earlier_{stamp}_{os.path.basename(p)}"))
+        new = os.path.join(work, f"earlier_{stamp}_{os.path.basename(p)}")
+        os.replace(p, new)
+        if os.path.exists(p + ".done"):          # keep "already clipped" with the piece
+            os.replace(p + ".done", new + ".done")
 
     jobs: queue.Queue = queue.Queue()
     shorts = ["--clips", str(args.shorts_per_chunk), "--clip-seconds", str(args.clip_seconds)]
