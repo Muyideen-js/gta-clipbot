@@ -140,7 +140,7 @@ def main() -> int:
     load_env()
 
     st = live_status(args.url)
-    if st != "is_live":
+    if st not in ("is_live", "unknown"):     # "unknown" = YouTube refused the check; try anyway
         sys.exit(f"That stream isn't live right now (status: {st}). "
                  "For a finished stream use: python -m clipper.run --url <link>")
 
@@ -244,7 +244,7 @@ def main() -> int:
             rec.wait(timeout=30)
             break
         start_no = len(glob.glob(os.path.join(work, "piece_*.ts")))
-        if live_status(args.url) != "is_live":
+        if live_status(args.url) not in ("is_live", "unknown"):
             log("Stream ended.")
             break
         log("Reconnecting to the stream...")
