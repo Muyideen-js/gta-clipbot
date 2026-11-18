@@ -144,9 +144,9 @@ def main() -> int:
     os.makedirs(work, exist_ok=True)
     log(f"Recording into {work}")
     # Resuming: earlier pieces are complete; rename them so they don't collide with new ones.
-    old = sorted(glob.glob(os.path.join(work, "piece_*.ts")))
-    for p in old:
-        os.replace(p, p.replace("piece_", "earlier_piece_"))
+    stamp = f"{dt.datetime.now():%H%M%S}"
+    for p in sorted(glob.glob(os.path.join(work, "piece_*.ts"))):
+        os.replace(p, os.path.join(work, f"earlier_{stamp}_{os.path.basename(p)}"))
 
     jobs: queue.Queue = queue.Queue()
     shorts = ["--clips", str(args.shorts_per_chunk), "--clip-seconds", str(args.clip_seconds)]
@@ -158,6 +158,7 @@ def main() -> int:
                 return
             try:
                 process(p, args, shorts)
+                open(p + ".done", "w").close()   # so a restart doesn't clip it twice
             except Exception as exc:
                 log(f"   piece failed: {exc}")
 
@@ -167,8 +168,8 @@ def main() -> int:
     ff = os.environ.get("FFMPEG", "ffmpeg")
     start_no = 0
 
-    for p in sorted(glob.glob(os.path.join(work, "earlier_piece_*.ts"))):
-        if os.path.getsize(p) > 5_000_000:
+    for p in sorted(glob.glob(os.path.join(work, "earlier_*.ts"))):
+        if os.path.getsize(p) > 5_000_000 and not os.path.exists(p + ".done"):
             queued.add(p)
             log(f"Earlier recording {os.path.basename(p)} queued for clipping")
             jobs.put(p)
@@ -177,7 +178,7 @@ def main() -> int:
         pieces = sorted(glob.glob(os.path.join(work, "piece_*.ts")))
         ready = pieces if all_done else pieces[:-1]   # the newest piece is still being written
         for p in ready:
-            if p not in queued and os.path.getsize(p) > 5_000_000:
+            if p not in queued and os.path.getsize(p) > 5_000_000 and not os.path.exists(p + ".done"):
                 queued.add(p)
                 log(f"Piece finished: {os.path.basename(p)}, queued for clipping")
                 jobs.put(p)
@@ -216,7 +217,7 @@ def main() -> int:
     t.join()
 
     if args.long_minutes:
-        mp4s = sorted(glob.glob(os.path.join(work, "piece_*.mp4")))
+        mp4s = sorted(glob.glob(os.path.join(work, "earlier_*.mp4"))) +             sorted(glob.glob(os.path.join(work, "piece_*.mp4")))
         total_min = len(mp4s) * args.chunk_min
         if total_min >= args.long_minutes * 1.3:
             log(f"Building the {args.long_minutes:.0f}-min best-of from the whole stream...")

@@ -45,6 +45,24 @@ TEMPLATES = [
     "The cleanest escape in GTA 6 so far 🏎️",
     "GTA 6 chaos in under 30 seconds 💥",
     "Leonida is wild at night 🌴",
+    "This is why GTA 6 is different 🤯",
+    "GTA 6 cops are NOT playing around 🚨",
+    "Nobody expected this in GTA 6 😭",
+    "The most GTA 6 thing ever happened 💀",
+    "GTA 6 just showed off again 🔥",
+    "Wait for it… GTA 6 moment 👀",
+    "How did this even happen in GTA 6? 😂",
+    "GTA 6 chaos never stops 💥",
+    "Vice City streets went crazy 🌆",
+    "That escape was too close in GTA 6 😮‍💨",
+    "GTA 6 details are insane 🔍",
+    "When GTA 6 goes completely off the rails 🚗",
+    "GTA 6 is unreal at this point 🔥",
+    "Rockstar cooked with this one 👨‍🍳",
+    "Peak GTA 6 moment right here 🏆",
+    "GTA 6 gameplay that looks like a movie 🎬",
+    "This GTA 6 clip is pure madness 😳",
+    "Typical GTA 6 day in Leonida 🌴",
 ]
 BASE_TAGS = ["GTA6", "GTA6Clips", "Shorts", "Gaming", "GrandTheftAuto", "ViceCity"]
 
@@ -74,6 +92,27 @@ def _tags(raw) -> list[str]:
     return keep[:8]
 
 
+_RECENT = os.path.join(os.path.expanduser("~"), ".clipbot", "recent_titles.txt")
+
+
+def _recent_titles() -> set[str]:
+    """Template titles used by earlier runs on this PC (each live piece is its own run)."""
+    try:
+        with open(_RECENT, encoding="utf-8") as fh:
+            return set(ln.strip() for ln in fh.readlines()[-20:])
+    except OSError:
+        return set()
+
+
+def _remember_title(title: str) -> None:
+    try:
+        os.makedirs(os.path.dirname(_RECENT), exist_ok=True)
+        with open(_RECENT, "a", encoding="utf-8") as fh:
+            fh.write(title + "\n")
+    except OSError:
+        pass
+
+
 def _template(context: dict) -> dict:
     if context.get("kind") == "long":
         mins = max(1, int(round(context["duration"] / 60)))
@@ -81,7 +120,10 @@ def _template(context: dict) -> dict:
                 "description": "The best moments from the stream, back to back.",
                 "hashtags": _tags(["GTA6Gameplay"]), "thumb_text": "INSANE GTA 6 MOMENTS",
                 "source": "template"}
-    title = random.choice(TEMPLATES)
+    used = set(context.get("avoid") or []) | _recent_titles()
+    fresh = [t for t in TEMPLATES if t not in used] or TEMPLATES
+    title = random.choice(fresh)
+    _remember_title(title)
     return {
         "title": title,
         "description": "Raw GTA 6 gameplay highlight.",

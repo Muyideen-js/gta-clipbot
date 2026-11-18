@@ -174,6 +174,47 @@ def main(argv: list[str] | None = None) -> int:
     sched = schedule.Schedule(os.path.join(args.manifest_dir, "schedule.json"))
     credit = (os.environ.get("CREDIT_LINE") or "").strip()
 
+    # Daily upload cap across ALL runs. YouTube's quota resets at midnight Pacific time.
+    daily_cap = int(os.environ.get("DAILY_UPLOAD_CAP") or 0)
+    daily_file = os.path.join(args.manifest_dir, "daily_uploads.json")
+    from zoneinfo import ZoneInfo
+    quota_day = dt.datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d")
+
+    def daily_count() -> int:
+        try:
+            with open(daily_file, encoding="utf-8") as fh:
+                return int(json.load(fh).get(quota_day, 0))
+        except (OSError, ValueError):
+            return 0
+
+    def count_upload() -> None:
+        os.makedirs(args.manifest_dir, exist_ok=True)
+        new = daily_count() + 1          # read before opening for write (which empties the file)
+        with open(daily_file, "w", encoding="utf-8") as fh:
+            json.dump({quota_day: new}, fh)
+
+    def can_upload() -> bool:
+        return (do_upload and not quota_hit and uploads < args.max_uploads
+                and (not daily_cap or daily_count() < daily_cap))
+
+    # Clips that don't get uploaded are copied here with a text file to copy-paste from.
+    ready_dir = os.environ.get("READY_DIR", "").strip()
+
+    def save_for_hand_posting(path: str, clip: dict, yt_title: str) -> None:
+        if not ready_dir:
+            return
+        os.makedirs(ready_dir, exist_ok=True)
+        stem = f"{dt.datetime.now():%m%d-%H%M}_{clip['id'][-6:]}"
+        shutil.copy2(path, os.path.join(ready_dir, stem + ".mp4"))
+        desc = clip.get("description", "").strip()
+        if credit:
+            desc += f"\n\n{credit}"
+        desc += "\n\n" + " ".join("#" + t for t in clip.get("hashtags", []))
+        with open(os.path.join(ready_dir, stem + ".txt"), "w", encoding="utf-8") as fh:
+            fh.write(f"TITLE:\n{yt_title}\n\nDESCRIPTION:\n{desc}\n")
+        clip["ready_file"] = stem + ".mp4"
+        log(f"      saved for posting by hand: {stem}.mp4")
+
     def publish_upload(path: str, title: str, description: str, hashtags: list[str], kind: str) -> dict:
         """Upload with the chosen publish mode. Returns the manifest's youtube block."""
         desc = description.strip()
@@ -235,7 +276,7 @@ def main(argv: list[str] | None = None) -> int:
                           thumb_text=cap["thumb_text"], duration=round(total, 1), segments=len(segs),
                           size_mb=round(os.path.getsize(lpath) / 1048576, 1))
                 log(f"      {total / 60:.1f} min, title: {cap['title']}")
-                if do_upload and not quota_hit and uploads < args.max_uploads:
+                if can_upload():
                     chapters = "\n".join(
                         f"{int(sum(min(args.long_segment, info.duration - x.start) for x in segs[:i]) // 60)}:"
                         f"{int(sum(min(args.long_segment, info.duration - x.start) for x in segs[:i]) % 60):02d}"
@@ -245,6 +286,7 @@ def main(argv: list[str] | None = None) -> int:
                         lv["youtube"] = publish_upload(lpath, cap["title"], desc, cap["hashtags"], "long")
                         vid = lv["youtube"]["id"]
                         uploads += 1
+                        count_upload()
                         try:
                             youtube.set_thumbnail(vid, thumb)
                             lv["youtube"]["thumbnail"] = True
@@ -256,6 +298,8 @@ def main(argv: list[str] | None = None) -> int:
                     except Exception as exc:
                         lv["youtube"] = {"status": "error", "error": str(exc)[:300]}
                         log(f"      upload failed: {exc}")
+                if lv["youtube"]["status"] != "uploaded":
+                    save_for_hand_posting(lpath, lv, cap["title"])
                 if tg:
                     try:
                         yt = lv["youtube"]
@@ -309,13 +353,14 @@ def main(argv: list[str] | None = None) -> int:
 
                 if do_upload and quota_hit:
                     clip["youtube"] = {"status": "quota"}
-                elif do_upload and uploads >= args.max_uploads:
+                elif do_upload and not can_upload():
                     clip["youtube"] = {"status": "capped"}
                 elif do_upload:
                     try:
                         clip["youtube"] = publish_upload(base + ".mp4", yt_title, clip["description"],
                                                          clip["hashtags"], "short")
                         uploads += 1
+                        count_upload()
                         log(f"      uploaded: {clip['youtube']['id']}"
                             + (f", goes public {clip['youtube']['goes_live']}" if clip["youtube"].get("goes_live") else ""))
                     except youtube.QuotaExceeded as exc:
@@ -325,6 +370,9 @@ def main(argv: list[str] | None = None) -> int:
                     except Exception as exc:
                         clip["youtube"] = {"status": "error", "error": str(exc)[:300]}
                         log(f"      upload failed: {exc}")
+
+                if clip["youtube"]["status"] != "uploaded":
+                    save_for_hand_posting(base + ".mp4", clip, yt_title)
 
                 if tg:
                     try:
