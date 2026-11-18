@@ -103,7 +103,19 @@ def stream_inputs(url: str, height: int) -> list[str]:
     return args + maps
 
 
+def has_sound(path: str) -> bool:
+    """True if the recording has a real audio track. After a reconnect the audio
+    stream sometimes comes back empty ("0 channels"): picture only, no sound."""
+    res = subprocess.run([os.environ.get("FFMPEG", "ffmpeg"), "-hide_banner", "-i", path],
+                         capture_output=True, text=True, encoding="utf-8", errors="replace")
+    audio = [ln for ln in res.stderr.splitlines() if "Audio:" in ln]
+    return bool(audio) and not any("0 channels" in ln for ln in audio)
+
+
 def process(piece_ts: str, args, extra: list[str]) -> None:
+    if not has_sound(piece_ts):
+        log(f"Skipping {os.path.basename(piece_ts)}: it was recorded without sound.")
+        return
     mp4 = piece_ts[:-3] + ".mp4"
     ff = os.environ.get("FFMPEG", "ffmpeg")
     subprocess.run([ff, "-hide_banner", "-loglevel", "error", "-y", "-i", piece_ts, "-c", "copy",
@@ -226,10 +238,24 @@ def main() -> int:
                     state["pos"], state["at"] = ln, time.time()
 
         threading.Thread(target=watch, daemon=True).start()
+        started, sound_checked = time.time(), False
         try:
             while rec.poll() is None:
                 time.sleep(15)
                 queue_finished()
+                # 45 s in, make sure this recording actually has sound.
+                if not sound_checked and time.time() - started > 45:
+                    sound_checked = True
+                    current = sorted(glob.glob(os.path.join(work, "piece_*.ts")))
+                    if current and os.path.getsize(current[-1]) > 500_000 and not has_sound(current[-1]):
+                        log("This recording came in without sound. Restarting the recorder...")
+                        rec.terminate()
+                        try:
+                            rec.wait(timeout=20)
+                        except subprocess.TimeoutExpired:
+                            rec.kill()
+                        open(current[-1] + ".done", "w").close()   # don't clip the silent part
+                        break
                 if time.time() - progress["at"] > 90:
                     log("Recording stopped moving for 90 s (connection problem). Restarting the recorder...")
                     rec.terminate()
