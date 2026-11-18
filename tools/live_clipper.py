@@ -191,7 +191,10 @@ def main() -> int:
             break
         log(f"Recording live at up to {args.quality}p (pieces of {args.chunk_min:.0f} min). "
             "Leave this window open. Ctrl+C stops.")
-        rec = subprocess.Popen([ff, "-hide_banner", "-loglevel", "error", "-y",
+        # -copyts keeps the stream's own clock: picture and sound are separate live streams
+        # that ffmpeg joins at slightly different moments, and resetting each to zero
+        # would put the sound out of sync.
+        rec = subprocess.Popen([ff, "-hide_banner", "-loglevel", "error", "-y", "-copyts",
                                 *src, "-c", "copy",
                                 "-f", "segment", "-segment_time", str(int(args.chunk_min * 60)),
                                 "-segment_start_number", str(start_no), "-reset_timestamps", "1",
