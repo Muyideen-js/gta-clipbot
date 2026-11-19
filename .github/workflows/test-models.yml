@@ -1,0 +1,20 @@
+name: Test AI titles
+on: workflow_dispatch
+permissions:
+  contents: read
+  models: read
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q requests
+      - env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          curl -s -w "\nHTTP %{http_code}\n" https://models.github.ai/inference/chat/completions \
+            -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Say hi"}],"max_tokens":5}' | tail -c 600
+          python -c "
+          from clipper import captions
+          print(captions.write_caption({'source':'kai','start':0,'duration':30,'intensity':'big'}, []))"

@@ -141,7 +141,7 @@ def process(piece_ts: str, args, extra: list[str]) -> None:
            *(["--upload", "false"] if args.no_upload else []), *extra]
     res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     for ln in res.stdout.splitlines():
-        if any(k in ln for k in ("title (", "uploaded:", "saved to", "Done", "quota", "best-of", "clip failed")):
+        if any(k in ln for k in ("title (", "uploaded:", "saved to", "Done", "quota", "best-of", "clip failed", "caption via")):
             log("   " + ln.strip())
     if res.returncode != 0:
         log("   pipeline error: " + res.stderr.strip()[-400:])
@@ -238,7 +238,7 @@ def main() -> int:
         # -copyts keeps the stream's own clock: picture and sound are separate live streams
         # that ffmpeg joins at slightly different moments, and resetting each to zero
         # would put the sound out of sync.
-        rec = subprocess.Popen([ff, "-hide_banner", "-loglevel", "error", "-y", "-copyts",
+        rec = subprocess.Popen([ff, "-hide_banner", "-loglevel", "error", "-y", "-copyts", "-start_at_zero",
                                 *src, "-c", "copy",
                                 "-f", "segment", "-segment_time", str(int(args.chunk_min * 60)),
                                 "-segment_start_number", str(start_no), "-reset_timestamps", "1",
