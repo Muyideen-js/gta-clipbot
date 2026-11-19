@@ -1,0 +1,20 @@
+{
+ "run_id": "44533825392",
+ "created": "2026-11-19T13:54:16+00:00",
+ "repo": "Muyideen-js/gta-clipbot",
+ "settings": {
+  "clips": 0,
+  "clip_seconds": 30,
+  "layout": "blur",
+  "upload": true
+ },
+ "sources": [
+  {
+   "name": "full_stream.mp4",
+   "duration": 1242.4,
+   "width": 1920,
+   "height": 1080
+  }
+ ],
+ "clips": []
+}
