@@ -29,18 +29,29 @@ def streamers() -> list[dict]:
         return json.load(fh)
 
 
-def live_video(channel: str) -> str | None:
-    """Return the watch URL of the channel's current live stream, or None."""
+def live_video(s: dict) -> str | None:
+    """Return the URL to record if this streamer is live (and on-topic), else None."""
+    url = s.get("live_url") or s["channel"].rstrip("/") + "/live"
     try:
-        out = ytdlp("--skip-download", "--print", "%(live_status)s|%(id)s",
-                    channel.rstrip("/") + "/live", timeout=120).splitlines()[-1]
+        out = ytdlp("--skip-download", "--print",
+                    "%(.{live_status,id,webpage_url,title,description,extractor})j", url, timeout=120)
+        info = json.loads(out.strip().splitlines()[-1])
     except Exception as exc:
         msg = str(exc)
         if "not currently live" not in msg and "does not have a" not in msg:
-            log(f"   check failed for {channel}: {msg.strip().splitlines()[-1][:120] if msg.strip() else ''}")
+            log(f"   check failed for {s['name']}: {msg.strip().splitlines()[-1][:120] if msg.strip() else ''}")
         return None
-    status, vid = (out.split("|") + [""])[:2]
-    return f"https://www.youtube.com/watch?v={vid}" if status == "is_live" and vid else None
+    if info.get("live_status") != "is_live":
+        return None
+    # Twitch puts the real stream title in "description"; YouTube in "title".
+    text = f"{info.get('title') or ''} {info.get('description') or ''}"
+    need = s.get("require", "").strip()
+    if need and need.lower() not in text.lower():
+        log(f"   {s['name']} is live but not playing {need} ({(info.get('description') or info.get('title') or '')[:60]!r}), skipping")
+        return None
+    if "youtube" in (info.get("extractor") or "") and info.get("id"):
+        return f"https://www.youtube.com/watch?v={info['id']}"
+    return url
 
 
 def env_for(s: dict) -> dict:
@@ -70,7 +81,7 @@ def main() -> int:
     while True:
         found = None
         for s in streamers():
-            url = live_video(s["channel"])
+            url = live_video(s)
             if url:
                 found = (s, url)
                 break

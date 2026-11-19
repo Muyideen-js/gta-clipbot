@@ -90,6 +90,8 @@ def live_status(url: str) -> str:
     try:
         return ytdlp("--skip-download", "--print", "live_status", url).splitlines()[-1]
     except Exception as exc:
+        if "not currently live" in str(exc):      # Twitch/Kick channel pages after the stream ends
+            return "not_live"
         log(f"status check failed: {exc}")
         return "unknown"
 

@@ -1,14 +1,37 @@
 [
   {
     "name": "IShowSpeed",
-    "channel": "https://www.youtube.com/@IShowSpeed",
+    "live_url": "https://www.youtube.com/@IShowSpeed/live",
     "credit": "Streamed live by IShowSpeed",
-    "tags": "IShowSpeed,Speed"
+    "tags": "IShowSpeed,Speed",
+    "require": "GTA"
   },
   {
     "name": "Typical Gamer",
-    "channel": "https://www.youtube.com/@TypicalGamer",
+    "live_url": "https://www.youtube.com/@TypicalGamer/live",
     "credit": "Streamed live by Typical Gamer",
-    "tags": "TypicalGamer"
+    "tags": "TypicalGamer",
+    "require": "GTA"
+  },
+  {
+    "name": "Kai Cenat",
+    "live_url": "https://www.twitch.tv/kaicenat",
+    "credit": "Streamed live by Kai Cenat on Twitch",
+    "tags": "KaiCenat",
+    "require": "GTA"
+  },
+  {
+    "name": "xQc",
+    "live_url": "https://www.twitch.tv/xqc",
+    "credit": "Streamed live by xQc",
+    "tags": "xQc",
+    "require": "GTA"
+  },
+  {
+    "name": "xQc (Kick)",
+    "live_url": "https://kick.com/xqc",
+    "credit": "Streamed live by xQc",
+    "tags": "xQc",
+    "require": "GTA"
   }
 ]
