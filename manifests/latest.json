@@ -1,129 +1,46 @@
 {
- "run_id": "44541408166",
- "created": "2026-11-19T17:42:15+00:00",
+ "run_id": "44582145981",
+ "created": "2026-11-19T23:29:18+00:00",
  "repo": "Muyideen-js/gta-clipbot",
  "settings": {
-  "clips": 4,
-  "clip_seconds": 30.0,
+  "clips": 0,
+  "clip_seconds": 30,
   "layout": "blur",
   "upload": true
  },
  "sources": [
   {
-   "name": "piece_009.mp4",
-   "duration": 1200.0,
+   "name": "full_stream.mp4",
+   "duration": 19786.2,
    "width": 1920,
    "height": 1080
   }
  ],
- "clips": [
+ "clips": [],
+ "long": [
   {
-   "id": "44541408166-01",
-   "source": "piece_009.mp4",
-   "start": 33.0,
-   "duration": 30.0,
-   "score": 1.0,
-   "intensity": "massive",
+   "id": "44582145981-long-1",
+   "source": "full_stream.mp4",
    "youtube": {
-    "status": "capped"
+    "status": "skipped"
    },
    "telegram": false,
-   "thumb": "data:image/jpeg;base64,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",
-   "size_mb": 3.9,
-   "title": "Vice City streets went crazy 🌆",
-   "description": "Raw GTA 6 gameplay highlight.",
+   "title": "GTA 6 Best Moments: 78 Minutes of Pure Chaos",
+   "description": "The best moments from the stream, back to back.",
    "hashtags": [
     "GTA6",
     "Shorts",
     "GTAVI",
-    "IShowSpeed",
-    "Speed",
+    "GTA6Gameplay",
+    "KaiCenat",
     "GTA6Clips",
     "Gaming"
    ],
-   "caption_source": "template",
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 17-42 - Vice City streets went crazy"
-  },
-  {
-   "id": "44541408166-02",
-   "source": "piece_009.mp4",
-   "start": 68.5,
-   "duration": 30.0,
-   "score": 0.421,
-   "intensity": "big",
-   "youtube": {
-    "status": "capped"
-   },
-   "telegram": false,
-   "thumb": "data:image/jpeg;base64,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",
-   "size_mb": 14.6,
-   "title": "GTA 6 is unreal at this point 🔥",
-   "description": "Raw GTA 6 gameplay highlight.",
-   "hashtags": [
-    "GTA6",
-    "Shorts",
-    "GTAVI",
-    "IShowSpeed",
-    "Speed",
-    "GTA6Clips",
-    "Gaming"
-   ],
-   "caption_source": "template",
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 17-42 - GTA 6 is unreal at this point"
-  },
-  {
-   "id": "44541408166-03",
-   "source": "piece_009.mp4",
-   "start": 575.0,
-   "duration": 30.0,
-   "score": 0.066,
-   "intensity": "solid",
-   "youtube": {
-    "status": "capped"
-   },
-   "telegram": false,
-   "thumb": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYyLjExLjEwMAD/2wBDAAgMDA4MDhAQEBAQEBMSExQUFBMTExMUFBQVFRUZGRkVFRUUFBUVGBgZGRscGxoaGRocHB4eHiQkIiIqKiszMz7/xACSAAACAgMBAQAAAAAAAAAAAAAFBgQAAwIHAQgBAAMBAQEAAAAAAAAAAAAAAAECAwAEBRAAAQQBAgQDBAgGAwEBAAAAAQIAEQMEIRIxQQUTUWEiFHEygbEjwVKhkQZC8DMV4dFTchaCYsIRAAICAQQBAgUFAQAAAAAAAAABEQIDIRIxQXFRIoFhBDKRsdEToRTh/8AAEQgAwABsAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AhpTurL55moKbT721IzQhMNTzbxYqWBEhk6XbteHq924OBgL0eDPksMaCBhH1vq+EZQHyXEMKD6bhWgJGrmhjLmImWh5dOhbZnZQTzavbeFpLqUExaYU51KX6pO5bmBGwMAJFaZU2asbUsFjQSyNtu19C4PVxX21DVVfccv2MuN020FugAIc2zzM15scduBDXri2u5OjVskQ+edQVCWDZBZLLUFJa3iGCyWQqUuvRgQLdimcp6iUDi1/tFReqkFLiALX5arS4fdIcNL3IlmQoKUEFTNWpSUsJQmHMUssyK2Zq/Q6pW8v1IkP1KQC6qwd8DJ0ysyH0NKdA1TpiQ3OQ8c1nLOSXDRqOSDLcrSmGsZEMpFqgynQsksFQcRHFmKU79HraIqQ6kPHfW2sYekw4FtBfHvUjQKKUEFytrmWJCGPUsOyJk1Jh7AyxPeeUXMiMNdwJDwd3VjhZuLnJql4Rjz0vJA5t17yfF8hqUqngyI6gsc25OBRVnLLgquUpxnWsnUkEa1tiw1eoNUrOrZMZzyW0KpHQarEkQ8ORUCJDGV7gGSTcCIU/F3vcdW3QQcwEEtdVLf8ANqSvUNXVjv1MdpRxWUAJ5gHP9nL27MPpIEJPpZKu+HFNZegTDwAz3JDw73gSuA/ZD0gOu4n6SwbKjZcVpAVGhSZ+bF9V6B02jFVbi91S0ETvAjb46Ac25XdXVZotMJHwoTETrJJOvA6MktQzOmBKU6KRYiDxkblf/gOugkueWfOYrRtICU6azzjy1c+gK0gw3/p3T6bsLWtFllZWrafiWQSDWTP5NPxkhUwIG4wPDy+TWqXaLS4meHAfwV1oXOSVdvYsGE7iCUkJUBpMKg8XBTbu6fkqjfYmxIFkHchI48og6efFkBWDUv8A4n6GsVBezIrA1WdBPukcdfm1eOsv2V45hcj1ba+58+o5AYH9OrssCe4VhO4H1akcRPAcy1AVeqxUlVYVsSY5q+HhLwrxTUtMA7ec6kHwPByqFitCU7tJClazJTw08fANUlHCC/7G7CwMPKtXjkQpNY9Q1KlfuPhCfpZTN/T2Jj4yrwpX1ewbYHrk8SZ4+5jeg5mPVfaFFNe5EIK1RxXJEnSSTMacG1dfy6q8Ltgyq1SCkDWUpVJV4Q6tynGgLZN124hONElwvQQv6bjBNavjKiZQUFO0e+fUPAh9cxf010c01GzCpUpSRJJXqTr9583RkIsVjyK0b9pUpOggcz4SeUcn0vIzaV3J7V6QimkqBKSU74hMCOPnD8p2dclnrGiSnn5lI3Vr1y3+xD/690pHHp2MQV7U/wA4qj3BTm4n6d6PdSF2dOoQrcsQBanQKIBhap1GrFY2bdWE3WL3JCjoTOpHDnE+TN/1+v8A1H8f8O/81V9y2knjb41OUFYUkEcCJbv0iwKwSCYFWUhR/wCKwEmfLUkvmuPYK6FIUkHt1haVbjuKfT+3gR6gAdfNlcTKsUmzEG7HFyQpW+BIE6A6/FMfKH6KrrDaXpqRiU30o18kO3L9iybjjWoKRcsnmCkkcPy0IYfHWmy/I2gAFe4AafF/d+5WD2bLjF0IRJVH1ZBiBuHMkjzlx8RKkWo3J29ysmfGDw+Qb2o6xPfxGL1LLuqUmqlRR6dyiOJnl7nG6YuzvoM7iFbpOs+/56vzq66heiFDdshcctdJ83g6dkY9ds2KjUQTMPmvMW8P9C9YSQ5dW2WoSlak0XaEg6JtH3gsDQ8iC0pWGquSpSfmsfTL6Lley9QTSoK37N0HUcY93gxS+nY0fCP483z4FZY1M+GbK1ucCujIXGw2boiI9QEeW0k+Wre+lHJy+3voUiurULWjQ6/CJA5TJHAuF0ujFx8sFdYVtQVBRn0EEerQ8R48mxUdTCMo45RatXcIBSsdvbxCiNFRHESUtnl2W4mDz8l+aol52Lj21qUUhK60qUFJ0IgTB5Qfc1vDze/Ssbdij2xAkgVoGgk6yTqZYvqefd7VlVoKjWtIQkboABT/AHLHdxHT60FG4rWlO8btOfLz+hvl2ZL104OjAr1xuXMxHyHBOX9WqvRSJ3HzPIA8v4DI0GpKNARJni0NGaL1gaifI/lA4t2V0fORAQrSAT7zx5tr3w1qnatW+NUm/I+3I3o2kLyMf2es43d9pN1exBUkBdYBBgKmY4aacHJUhV59pUIFYFZhUDyADTf+wX2KBVjYfh/LPCZ+85FmUbFFSfSDrtGg/gOv+XLl3XWWlFSInnXng9fBl+jpji+G1nPui2lvhPS4JN6aQqs1KWIJURKoHLmTqOLCZuRZCFdxW/csbp1ggNrNqbcXUJB2wYjU+LS8mkrSkpI5+Xg+jftTXrXb/wBPKbVrPauegGRJfoexBSSk8vB+B8wo29JvKRYidNFD6D9jYjd5lq+EkIJEaqSFT5ESyQysfds3yZiIPF5agso/EhWi0FdxJB9ASEzqZOsDSdG4121H6xNYBA2zAB2xwnw+b5bYlftRSCDMR7o5s/j567QBZUrtcFFIidNYPAK8PB8F8dnfyzivjs7SYCg9Ty7VIKakSAVHUAAQPCSY0cu/o9ShPtW6yAANoSkgf+lF46L6V07aE7UlXw/vKv8A6P28HgXaayoiCUSo7joRMCDrz5c33LGlr2dm5k/pGB7PlC5Swdk7RpIV4xPJ9STnUkepcHmCsvkmBbfasrUUpnbtQInbzJjx83GylLF9kKPxePk+XN9PviycdFaZOmCMDoqsqlF2+AqdNBwMebYUdGrAH1q/yH0teweq42PTWhabipHgo7eJOidwH4M6jr+GP9nzH9327mQ1NL6fZx2/KflPkwFw09I1c3M6nj5C9yVQNoEEGfoYQ5NZ/f8Agf8ADD1Q1fa0wXb/ADFe/wCx6B73rSpcgzoHnUmo00lCgbJUFp1mOR8PJqP4GDFQE1FagFSnQcdByayvVRMRJOng2WlcVpHl9rxqx6FkkgifAwyK2QU5ihsUkgLACTppCRH4ht9YAx6o3apBIMxPkCS1j2StHqSSojXaqIPkWZsWitAFRUqEDQ8lfdHkHoBIUoTvCygjenQc4Oh19/B7Gg7jKbd0ekBaVJEc9pgSfPm0qpWTSvuIK0q5nx944H5tro6r8HeNVZ2q3L2SZn0iARxHEum5CxPaPcnJupyE9pISdgCgpKefMx4/Lg4CipSipRknUlybMnBUpazcqxSieA2x4cZn3OLZfjbj21nby3fFw5xpxaSu2vyaUhAdddalCuuusGPQJc2oBLjI4uUdGjK1DaDIcgMfSXnXZtb1EuTXuwSsuHqMxvJAPEaMBkyCytVoW4+SAWr1NAESXIl40p1ZEU6PmdQOovuuuvpLFdddYAbpMFyp3FwnOpGrUrUK1pIDh3yzCNAx2SoQ3ROwBdddYEJtFpSYZawylroMMimzclgKN64lnElMNYUraXt7Qp4JDdddbBK666wA2SJLPU1wGDR8QbFWdHoNMGdRgNfyCZZ46sVfXLYUEuv0iH41MV7pVtejrJjYmXq66wEr9Akvx5EfEGQkldMJlwm1dua/k1hQhRDID1HFnazowKeLNo4PAJMvwgF4pe0sgIi6AXH9nZSXszBgMccvEaVBn3YD0AF7tqd2s8UBxDW9BpP/2Q==",
-   "size_mb": 22.5,
-   "title": "How did this even happen in GTA 6? 😂",
-   "description": "Raw GTA 6 gameplay highlight.",
-   "hashtags": [
-    "GTA6",
-    "Shorts",
-    "GTAVI",
-    "IShowSpeed",
-    "Speed",
-    "GTA6Clips",
-    "Gaming"
-   ],
-   "caption_source": "template",
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 17-43 - How did this even happen in GTA 6"
-  },
-  {
-   "id": "44541408166-04",
-   "source": "piece_009.mp4",
-   "start": 615.0,
-   "duration": 30.0,
-   "score": 0.0,
-   "intensity": "solid",
-   "youtube": {
-    "status": "capped"
-   },
-   "telegram": false,
-   "thumb": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYyLjExLjEwMAD/2wBDAAgMDA4MDhAQEBAQEBMSExQUFBMTExMUFBQVFRUZGRkVFRUUFBUVGBgZGRscGxoaGRocHB4eHiQkIiIqKiszMz7/xACYAAACAgMBAQAAAAAAAAAAAAAFBAMGBwACAQgBAAIDAQEAAAAAAAAAAAAAAAMEAgUBAAYQAAIBAwIEBAMGAwcFAQAAAAECAAMRIQQSMRMFQSJRYTKBcaFCsZEUMwYWYtEjY5LxgsGy4XIVUkM0EQACAgEDAgUDBQEBAAAAAAABAAIRIQMSMUFRImEEE3GB8FIyI7HBoUKR/8AAEQgAwABsAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AwG67Z6hsZwTecxQxS22Gm9lgiu+5pzzTa0XnCLK1yicw8p8MrVM2MJGttEwDLoLHUpbjFzRIjaVgxjtRbreWECwkUMMTqb3nsc6KpehGkiwjiCCYpSipaFxpmtwkWhUbheXxFp7RwnJQHAM2bNibrs2bNmOslP3CTVhIU9wk1aBPLNjpe8S3Mo5MqVH3iXJv0RCROXmqn3GbPT7jNljHhXLIohCmsSQQtREgWCb0qHFpZVWpbvN6XQDkTIyaFNoxB27up+TJs2bF7Tvs8mzZzz2vESer2kC8RJ6w4QJ5ZB5o+8S4v+iJTqP6glyf9ESUeXWrH3GbPT7jNlpHhWLOkNUYHSGaMgxcidKNiJktH8ImMemcRMhofCJHajLgep0oeUSfpGLgS584GMo6kSttsacOV9O1E2MTl+6rSUgmUGEDAvSmxk1Rt0XmzqcWKH6glzf9ESn6dSXEuTqeSJwoFk1U+4zySEeIzmWUThXKwkMUe0DpDNDiJzBv/TOImQU9olP6TTBtMhqi2E23n5TfUaoElaj7b7b9iQM9vjPPzevXf/aVBs92Pbm2cYziRk1dmy7bN24jtutbd87YvIGNQliWa7+65Pi758/PMqgfhcL3U1GrqWDu53C4uOI8xiDfWMFnBU7jdcLngPIeUXzwhQwXxyeWQV8eCMnyv+Fp2z0OSNtMbtwuc4GcfGJA5B+H0nYtyvXePwsZm0efPd2/hsVJKLGjTUFKj2ttGW34UZNp2a1XKl2sCRm3aRaTOt0Hz0//ADkje9/+9vvMJogGwQDjn6uSKb6doqWrqbapVBYncRf4S5/wzomW4r0j/pb+s39s0KNWqwqoHHLNgezXFjM2pp05QTaoBUA2AHaFJrgItw6hwF/DtJmK06lPHkrn6C5kNT9taykj1FYBUUsSVK4UX+1mZgoU6aV6+wEDwDPEkXkXVX2aDUn+7I/xY/3lhAgiPhGWz0xpmvAM93DWhruUZV1Nak6jPioopPkrOPpxnLdU6gpt+bq8B9pWzbOQogGsoPMG0HxenD0MIJSuohNOA3S7cVyuaOjEymaxxRAXtVQdauvVkKitpUqDGC9Pls1u1x4r2g1FD19L/faFqfxFOpT+9RDh6jda3PVTemxBud1qiWO0YB92CPjEdNQBq6VWLUmoBnXmbbOrNuti/nb4zy/s6pl4tgMrxu7NWZxIkRZGM0erSqgT8tQawuKtUN5keAi/fubQW4G5iBi5sPS+Jatf0z8qtYgVjywrFyo5dmIFrgcfFAjKvMqqBYbQR6XKnHwjfty06EuuebxaEtx0Oi6aNMOYoquwuzXIINt1gL4A+sCdb0On0j0204ZUqDKk32sONjx+BnlBC6sadz9i1mxfv37CBdRXesz3YkKQBc/A/jJbet/RmapK9NSrW1uj8JO16VrD7Cvfd8gL3jVWk9KqyupQ7zhhY5zJum1amnVK9JVYqNh3HFj93zk+u1FTUMj1FRbeFdhuNozx+M3S3byNo27eb632d1IbQM/Zcg/tiwNZy4XZTvnub4H4zI9XqFSkulY7Tzb+EA8cCwte5mEelVVp0tQ7X8Ip2Gckva2JZdbr6vPVFYMmnICjtvA8RPmd143KFgd+3kh2jb525NpndV1B3bvGBf5IuPheAf3A+zp9T+ZkX63/ANpL0XVHV0HZgNwqHcRjcSBkjzgf901NukpL/wC1Qn/Cv/WNaIoxB6U2OiMw++HBtr1lH815d6WnqFAdhle6ejPrVZVDctWc3zwFuHzIh2prdXuPAenLv97SOt6g6eoYxET3sph6g6eAASc5ePya0U5RrtqDsAUlQGQX4XuSRgY9I+w5qJVcNakuwlfazcTjzPG3CHGpVada23R8wWA8FUccix2Ffrwgmv0/W09x2AZJCo6lAT5K3+c8zLVEpAjViK4vB8+jLSPp4wqWhqkn9VSG09sc4ab1KlQNIcpnA4lbtbJtbJPDjK4S20Am/wAu9htH0EuZ6fqgjHUGu68SB7cfH+kr/UNN+XdBYLuW9hkD0v5+cs/cjqC40aoXdtXMZ4p60+v5dlNlt5SHW06VQc2nZWdlV7cM53W7esCHjHz/APmJFrh14nja8LtxaJsGm1YKbQLBPCPKwk9XVBVswBBsLH1le077RYi18/GMOef4Let/lCxiHGx6J2RK9Ie2oFVjtVjtzbbcYN7ZFoUr16DuFpBaS00VNpKhiQMu1rZY5gbRIyA39PoIK1lLdqqlu5Qj13Y++MVwfNdOmDpR/K8uR+idSp6A1+YjtTqOv9pTswQqPtLx79ox+4NTS6i+ipaeqtQPuyudtyB4hxFgCbGRabT09PT2IAL5PqbWgs8nT6nfhXcbEHmWIBP4Q8v2/H1DZyjHT093/QjX+Uv1OjUKCltMavNCEbt9mZu38oHcwXT6brnF31tRTciwUHh34jjLWXycwc2oAOWA+cqSTI2fEfPLQb5HquEC+XVGN+4Fr48IFiLD5ZhmmxNNvEjDjcljb0uWOLynfxR0uu135iX80J+68L0eu9GANtXTF+xpuvw9n3yk9nwi4Hjsf6W95vn+G16aiNVp2JVftLjINh6zC/XExTbyLD8f8plXR9e6RRUr+dpWJJ+3i/8ApmJOs6/S1Rtp1Q/jJFr2tn07xr0kdo1RtIuqsEcfLCZsjLR24y00QmooOCF3FRbsQRm6/HBEqjOt+MI6WuqWF7WN5bRzGuGESASDwUuukVqNN920lc4/A/hJael20zWXx7ULd7Y9YvXr4C0nBXOD2v2Edo61hR5BZFp2sbX3G/a/l8oSJoVXRhQvoy0dWth4WH1jDU11O5qeWJQBjfAVtxuM/Ph2gzbQ+zVAHrcxnT6mlpGZhqEG4bT4Tw9D2hbFCufqtGcdoo5Dc9+OMD6pTWq6e3Fayn4d/uiX/ktKf/sn1/pGqOu0PMRnqjF8gE5OBjHY5hJyuBHdNPV3RIBbVvA9xt9JSuoMamobacABYeq6zQkeFzV8vARb1ycytajltVY0i5Q8N9t3DN7Y48PSB9Pp3I7hWOrXbJ/jL/wuNp0OM5mwYDBMU+EHVvdHqPCK1/dIydpUkyG0hnQkQXUurYnd4PUybdDBgtb7Rdzui5aSpmGAeYQmY6gzJxTjKJNWYBfo8I5aQILRmGDbQlQcdRqnT3RWPUW7RMNREWvJTiuopEZhijJ9QgZYOZTGLUALybbJAlnhTkXWCirEIcT28dNEiQ8oxuIRq8Yp8ZKKUbSlaFcCyojKiJ7wMR1GBg1uC6JLFwwne6GC+HH8lQ2MimxVq4mmy0HEJtYrK1SaFkqXkJBbuwpFPHD1NRtgsjxXhRGG2DiMq0gwOoihteM1Ggotdo4DSNKogMb5WJJpU3CGTTAWS3OOP64KtOUqkR3WL4jBoEwZW4JEVTJecYPE7jApsBSEmzZsTDRrdMx9DmBwbQgjSJTRkmQLiRM5SSUmuJHWEGlIRz6iQo9zInTM9RJtq5bPQ1IQR06vdiVkCP00msqZ3TfmJGjaFhOtoM66ZA0gthE92wwaYm8oQwmmE3//2Q==",
-   "size_mb": 26.5,
-   "title": "Vice City police had no chance 🚔",
-   "description": "Raw GTA 6 gameplay highlight.",
-   "hashtags": [
-    "GTA6",
-    "Shorts",
-    "GTAVI",
-    "IShowSpeed",
-    "Speed",
-    "GTA6Clips",
-    "Gaming"
-   ],
-   "caption_source": "template",
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 17-43 - Vice City police had no chance"
+   "thumb_text": "INSANE GTA 6 MOMENTS",
+   "duration": 4688.1,
+   "segments": 30,
+   "size_mb": 888.4,
+   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 23-42 - GTA 6 Best Moments 78 Minutes of Pure Chaos"
   }
  ]
 }

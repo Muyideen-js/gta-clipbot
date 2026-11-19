@@ -1,0 +1,46 @@
+{
+ "run_id": "44582145981",
+ "created": "2026-11-19T23:29:18+00:00",
+ "repo": "Muyideen-js/gta-clipbot",
+ "settings": {
+  "clips": 0,
+  "clip_seconds": 30,
+  "layout": "blur",
+  "upload": true
+ },
+ "sources": [
+  {
+   "name": "full_stream.mp4",
+   "duration": 19786.2,
+   "width": 1920,
+   "height": 1080
+  }
+ ],
+ "clips": [],
+ "long": [
+  {
+   "id": "44582145981-long-1",
+   "source": "full_stream.mp4",
+   "youtube": {
+    "status": "skipped"
+   },
+   "telegram": false,
+   "title": "GTA 6 Best Moments: 78 Minutes of Pure Chaos",
+   "description": "The best moments from the stream, back to back.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "GTA6Gameplay",
+    "KaiCenat",
+    "GTA6Clips",
+    "Gaming"
+   ],
+   "thumb_text": "INSANE GTA 6 MOMENTS",
+   "duration": 4688.1,
+   "segments": 30,
+   "size_mb": 888.4,
+   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 23-42 - GTA 6 Best Moments 78 Minutes of Pure Chaos"
+  }
+ ]
+}
