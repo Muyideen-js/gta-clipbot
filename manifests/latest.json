@@ -1,20 +1,48 @@
 {
- "run_id": "44533825392",
- "created": "2026-11-19T13:54:16+00:00",
+ "run_id": "44538132344",
+ "created": "2026-11-19T13:58:16+00:00",
  "repo": "Muyideen-js/gta-clipbot",
  "settings": {
-  "clips": 0,
-  "clip_seconds": 30,
+  "clips": 4,
+  "clip_seconds": 30.0,
   "layout": "blur",
-  "upload": true
+  "upload": false
  },
  "sources": [
   {
-   "name": "full_stream.mp4",
-   "duration": 1242.4,
+   "name": "piece_000.mp4",
+   "duration": 30.3,
    "width": 1920,
    "height": 1080
   }
  ],
- "clips": []
+ "clips": [
+  {
+   "id": "44538132344-01",
+   "source": "piece_000.mp4",
+   "start": 0.0,
+   "duration": 30.0,
+   "score": 1.0,
+   "intensity": "solid",
+   "youtube": {
+    "status": "skipped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYyLjExLjEwMAD/2wBDAAgMDA4MDhAQEBAQEBMSExQUFBMTExMUFBQVFRUZGRkVFRUUFBUVGBgZGRscGxoaGRocHB4eHiQkIiIqKiszMz7/xACGAAACAwEBAQAAAAAAAAAAAAADAgEEAAUGBwEAAgIDAQAAAAAAAAAAAAAABAMFAgEABwYQAAIBAgQEBAUEAwEAAAAAAAABAhEDEgRRMSFBUhMFodGSkYEUYUJTIvBDsRUjcREAAwACAQMFAAMBAAAAAAAAAAECAxESUQSRQSFSYRMxMoFx/8AAEQgAwABsAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8A+VGJMe1KJkEmMMQ9MkkgkYmPlkkkEj0wuWMSQSPQXJiSCR6C5JMYwwJRXMMQedPBJkE0qYt5eKlLiYp6Q9MrYZLkRR6HuI5KE0gy8LjSoC+40OVHhFCTJcWuR7+GRtx0K1zJW2zC7sarPFqEnyIo0e7t5S2k6nDzliMHwDsPc8mF48mzgGMYnJe0SkskxjDwpCChBTzqOfJiBYSwOohjWthCZ2Y+IyhQsvxidKHm3GpGBAddvscjrPxS4zf7KZycCJwIwu0HqTqPxGYGWZld3KWBDJUDcXb8WFxOhjGJJmfYk5MYxh2wpMkgcg8+jniYMwxAxBCZBAxhqCJZBJjDUFyzGJMOQbLIJMYagyWYxjDNhKZTVyWrDqT1KkS3FHkE31fk8a0l6IOg6itBYospDk31YraB4FobBHQs0HtOMbkJTjjipxcodUVJNx+a4D1T+2Ew0VlCOg/bjojufU+GxSw5DMylhkm5XIYVJqilGPfb+/GSa1K969lbkFGzlbllqVccp4m061hL/pOtP20lRc9lwM4u4qqS/LKtv+WvZf8ASTxUtpcf90jmduHShu3DpQQkm50T2OY+M+EJ2odKI7UOlBRWx3sGcY+M+EB7cOlCYI6IK2CqJpg1NfRxYxOhCBoWzq27Z5U55ky6AxthlE6MLMmqpV/nJbv5D9ifRL2sbIF+pzMIlDpOzPol7WC7M+mXw/yPQZjyFGhi07NxfhLk9nzVUJ25qjwvjw2/moXLJnDkAmH7c9sEtq7PbX/w3budE/a/QJV/ZO48gOoJyCOFzon7WUZOjLvKOrMO5AcQJyBYgSswHWU9FC2dOFseFs6MIAHE5jlzA4ViqKnzVd9/iM53OPHk1tyaoWlAWUBnFAizvqUZXrtKV183VgHfuJNftSfDbkWZRKsomeK6EjjzPqB+ouxpRpU+32p8aAZ5q7JJNqkWmlRbrmTJFSRvsvQmsOQL9VcTb4VfOm3Fvh82xVnLkNHo6bOlMX3aXAqMrSZfc9CbjIWnnbq5rgkttNjj3JuUm3u238R5MpyYirXoNdiuQLEK2BqBOxLo+uQiXoxOfG/aX5osrNWF/ZHz9CU0cwycn6M6CiJKID6zL/qx8/QV5zL/AKsfP0LAqV7/AK14YOcSlJB5ZrLv+yPn6FKWYs9a8zWSeLl0fgrTRSmWZXrT/NFOVyD/ACQlp9GTmJsrSKkixKcdSrJoo0+jJrHZVkVJFuSK7i9BFTXR+ArlspsGWXCWgPBLQQ4r414Zk9vQSgcRonjnSoADYdgygVNAWDYZg2YC5YJgmGYNmhcsExAjEZoZLEFGEM7DJZAgwhuwlM9gIwwNjTmyYFg2GYNlGFSwLBsMwTKBksCwbDMEzAZLBMEwzBsrsLlghBxDGwyWIxRmKbsJTPag2GYNhZzdMCwbDMGyjCpYFgmGYJiwyWCYJhmCZVhssCwTDMExYXLBMRhGDZoXLBsQdiGhCZ7tgWHYJhpzuQLBsIwbKhcgmCYVg2LC5BMEwrBMowyQTBMMwTFhkgWIwjBswFSDYg7ENCEz/9k=",
+   "size_mb": 9.0,
+   "title": "GTA 6 just showed off again 🔥",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "KaiCenat",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/19 Nov 13-58 - GTA 6 just showed off again"
+  }
+ ]
 }
