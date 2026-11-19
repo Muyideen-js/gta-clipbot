@@ -67,8 +67,11 @@ jobs:
           python - <<'EOF'
           import json, os
           s = next((x for x in json.load(open("streamers.json")) if x["name"] == os.environ["STREAMER"]), {})
+          import time
+          tag = f"clips-{time.strftime('%Y%m%d-%H%M', time.gmtime())}-{os.environ['GITHUB_RUN_ID']}"
           with open(os.environ["GITHUB_ENV"], "a") as fh:
               fh.write(f"CREDIT_LINE={s.get('credit', '')}\nEXTRA_TAGS={s.get('tags', '')}\n")
+              fh.write(f"RELEASE_TAG={tag}\n")
           EOF
 
       - name: Record and clip
@@ -77,6 +80,8 @@ jobs:
           MAX_MIN: ${{ inputs.max_minutes }}
           NO_UPLOAD: ${{ inputs.upload == false && '--no-upload' || '' }}
           GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          STREAMER: ${{ inputs.streamer }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
@@ -101,8 +106,10 @@ jobs:
         run: |
           python tools/package_release.py clips_out release_files
           n=$(ls release_files/*.mp4 2>/dev/null | wc -l)
-          if [ "$n" -gt 0 ]; then
-            tag="clips-$(date -u +%Y%m%d-%H%M)-${{ github.run_id }}"
+          tag="${RELEASE_TAG:-clips-$(date -u +%Y%m%d-%H%M)-${{ github.run_id }}}"
+          if [ "$n" -gt 0 ] && gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" release_files/* --clobber   # add anything not sent yet
+          elif [ "$n" -gt 0 ]; then
             gh release create "$tag" release_files/* \
               --title "${STREAMER:-Stream} clips $(date -u '+%d %b %H:%M') UTC ($n clips)" \
               --notes "Clips made from ${{ inputs.url }}. Files starting with Post_by_hand were NOT uploaded by the bot. Each .txt has the title, description and TikTok caption. On a PC, run tools/get_clips.py to put them in Desktop\\GTA Clips."

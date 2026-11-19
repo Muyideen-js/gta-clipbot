@@ -145,6 +145,39 @@ def process(piece_ts: str, args, extra: list[str]) -> None:
             log("   " + ln.strip())
     if res.returncode != 0:
         log("   pipeline error: " + res.stderr.strip()[-400:])
+    publish_release()
+
+
+_published: set[str] = set()
+
+
+def publish_release() -> None:
+    """On GitHub: add the clips made so far to this run's release right away,
+    so they show up every 20 minutes instead of only when the run ends."""
+    tag, clips = os.environ.get("RELEASE_TAG"), os.environ.get("CLIPS_DIR")
+    if not tag or not clips or not os.path.isdir(clips) or not shutil.which("gh"):
+        return
+    out = os.path.join(ROOT, "work", "release_files")
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "package_release.py"), clips, out],
+                   capture_output=True)
+    new = [os.path.join(out, f) for f in sorted(os.listdir(out)) if f not in _published] if os.path.isdir(out) else []
+    if not new:
+        return
+    have = subprocess.run(["gh", "release", "view", tag], capture_output=True).returncode == 0
+    if not have:
+        title = f"{os.environ.get('STREAMER') or 'Stream'} clips {dt.datetime.utcnow():%d %b %H:%M} UTC"
+        res = subprocess.run(["gh", "release", "create", tag, *new, "--title", title, "--notes",
+                              "Clips are added here every 20 minutes while the stream is recorded. "
+                              "Files starting with Post_by_hand were NOT uploaded by the bot. "
+                              "Each .txt has the title, description and TikTok caption."],
+                             capture_output=True, text=True)
+    else:
+        res = subprocess.run(["gh", "release", "upload", tag, *new, "--clobber"], capture_output=True, text=True)
+    if res.returncode == 0:
+        _published.update(os.path.basename(f) for f in new)
+        log(f"   published {len(new) // 2} new clips to the release page")
+    else:
+        log(f"   release upload failed: {res.stderr.strip()[-200:]}")
 
 
 def main() -> int:
