@@ -1,5 +1,5 @@
 numpy>=1.26
 requests>=2.31
 gdown>=5.1
-yt-dlp>=2025.1.1
+yt-dlp[default]>=2025.1.1
 tzdata>=2024.1

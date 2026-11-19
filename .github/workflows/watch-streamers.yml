@@ -27,7 +27,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: pip install -q -U yt-dlp
+      - run: pip install -q -U "yt-dlp[default]"
       - name: YouTube cookies
         env:
           YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
