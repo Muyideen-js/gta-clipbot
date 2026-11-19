@@ -69,14 +69,18 @@ def load_env() -> None:
     os.environ["PATH"] = os.path.dirname(sys.executable) + os.pathsep + os.environ.get("PATH", "")
 
 
-def ytdlp(*args: str) -> str:
+def ytdlp(*args: str, timeout: int = 180) -> str:
     loc = ["--ffmpeg-location", os.environ["FFMPEG"]] if os.environ.get("FFMPEG") else []
     # If YouTube says "confirm you're not a bot", a cookies.txt export placed here fixes it.
     cookies = os.path.join(os.path.expanduser("~"), ".clipbot", "cookies.txt")
     if os.path.exists(cookies):
         loc += ["--cookies", cookies]
-    res = subprocess.run([sys.executable, "-m", "yt_dlp", "--no-warnings", *loc, *args],
-                         capture_output=True, text=True, encoding="utf-8", errors="replace")
+    try:
+        res = subprocess.run([sys.executable, "-m", "yt_dlp", "--no-warnings", "--socket-timeout", "30",
+                              *loc, *args], capture_output=True, text=True, encoding="utf-8",
+                             errors="replace", timeout=timeout)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"YouTube didn't answer within {timeout} s (internet down?)")
     if res.returncode != 0:
         raise RuntimeError(res.stderr.strip()[-600:])
     return res.stdout.strip()
@@ -93,8 +97,10 @@ def live_status(url: str) -> str:
 def stream_inputs(url: str, height: int) -> list[str]:
     """ffmpeg input args for the live stream. YouTube often serves video and audio
     as separate HLS playlists, so this may return two inputs."""
-    fmt = (f"bv*[height<={height}][protocol*=m3u8]+ba[protocol*=m3u8]/"
-           f"b[height<={height}][protocol*=m3u8]/bv*+ba/b")
+    # Only H.264 + AAC over HLS: the recorder writes MPEG-TS pieces, which can't hold
+    # YouTube's VP9/Opus DASH formats (the picture would be silently dropped).
+    fmt = (f"bv*[height<={height}][protocol*=m3u8][vcodec^=avc1]+ba[protocol*=m3u8]/"
+           f"b[height<={height}][protocol*=m3u8][vcodec^=avc1]")
     urls = [u for u in ytdlp("-g", "-f", fmt, url).splitlines() if u.startswith("http")]
     args: list[str] = []
     for u in urls[:2]:
@@ -109,17 +115,18 @@ def has_sound(path: str) -> bool:
     res = subprocess.run([os.environ.get("FFMPEG", "ffmpeg"), "-hide_banner", "-i", path],
                          capture_output=True, text=True, encoding="utf-8", errors="replace")
     audio = [ln for ln in res.stderr.splitlines() if "Audio:" in ln]
-    return bool(audio) and not any("0 channels" in ln for ln in audio)
+    video = any("Video:" in ln for ln in res.stderr.splitlines())
+    return video and bool(audio) and not any("0 channels" in ln for ln in audio)
 
 
 def process(piece_ts: str, args, extra: list[str]) -> None:
     if not has_sound(piece_ts):
-        log(f"Skipping {os.path.basename(piece_ts)}: it was recorded without sound.")
+        log(f"Skipping {os.path.basename(piece_ts)}: it was recorded without sound or picture.")
         return
     mp4 = piece_ts[:-3] + ".mp4"
     ff = os.environ.get("FFMPEG", "ffmpeg")
     subprocess.run([ff, "-hide_banner", "-loglevel", "error", "-y", "-i", piece_ts, "-c", "copy",
-                    "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart", mp4], check=True)
+                    "-movflags", "+faststart", mp4], check=True)
     lst = mp4 + ".txt"
     with open(lst, "w", encoding="utf-8") as fh:
         fh.write(mp4 + "\n")
@@ -248,7 +255,7 @@ def main() -> int:
                     sound_checked = True
                     current = sorted(glob.glob(os.path.join(work, "piece_*.ts")))
                     if current and os.path.getsize(current[-1]) > 500_000 and not has_sound(current[-1]):
-                        log("This recording came in without sound. Restarting the recorder...")
+                        log("This recording came in without sound or picture. Restarting the recorder...")
                         rec.terminate()
                         try:
                             rec.wait(timeout=20)

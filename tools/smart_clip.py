@@ -44,7 +44,7 @@ def download_section(url: str, a: float, b: float, out: str, height: int) -> str
         try:
             ytdlp("--download-sections", f"*{max(a, 0):.1f}-{b:.1f}", "-f", fmt,
                   "--merge-output-format", "mp4", "--force-overwrites", "--retries", "10",
-                  "--fragment-retries", "20", "-o", out, url)
+                  "--fragment-retries", "20", "-o", out, url, timeout=1800)
             if os.path.exists(out) and os.path.getsize(out) > 50_000:
                 return out
             last = "empty file"
@@ -96,7 +96,7 @@ def main() -> int:
     log("Step 1/4: downloading the sound only...")
     audio = ytdlp("-f", "ba[ext=m4a]/ba", "--retries", "10", "--fragment-retries", "20",
                   "-o", os.path.join(work, "audio.%(ext)s"), "--print", "after_move:filepath",
-                  args.url).splitlines()[-1].strip()
+                  args.url, timeout=8 * 3600).splitlines()[-1].strip()
     dur = duration_of(audio)
     log(f"   got {dur / 3600:.1f} h of audio ({os.path.getsize(audio) / 1048576:.0f} MB)")
 
