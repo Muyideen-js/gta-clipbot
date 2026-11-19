@@ -1,0 +1,183 @@
+{
+ "run_id": "local-20261118-185131",
+ "created": "2026-11-18T17:51:31+00:00",
+ "repo": "",
+ "settings": {
+  "clips": 6,
+  "clip_seconds": 30.0,
+  "layout": "blur",
+  "upload": true
+ },
+ "sources": [
+  {
+   "name": "earlier_182820_piece_000.mp4",
+   "duration": 1683.0,
+   "width": 1920,
+   "height": 1080
+  }
+ ],
+ "clips": [
+  {
+   "id": "local-20261118-185131-01",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 206.25,
+   "duration": 30.0,
+   "score": 0.0,
+   "intensity": "solid",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 14.2,
+   "title": "GTA 6 is unreal at this point 🔥",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 18-52 - GTA 6 is unreal at this point"
+  },
+  {
+   "id": "local-20261118-185131-02",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 257.25,
+   "duration": 30.0,
+   "score": 1.0,
+   "intensity": "massive",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 9.8,
+   "title": "Peak GTA 6 moment right here 🏆",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 18-55 - Peak GTA 6 moment right here"
+  },
+  {
+   "id": "local-20261118-185131-03",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 337.25,
+   "duration": 30.0,
+   "score": 0.088,
+   "intensity": "solid",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 18.1,
+   "title": "That escape was too close in GTA 6 😮‍💨",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 18-56 - That escape was too close in GTA 6"
+  },
+  {
+   "id": "local-20261118-185131-04",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 629.25,
+   "duration": 30.0,
+   "score": 0.018,
+   "intensity": "solid",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 5.6,
+   "title": "GTA 6 gameplay that looks like a movie 🎬",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 18-58 - GTA 6 gameplay that looks like a movie"
+  },
+  {
+   "id": "local-20261118-185131-05",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 1436.0,
+   "duration": 30.0,
+   "score": 0.058,
+   "intensity": "solid",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 7.9,
+   "title": "The cleanest escape in GTA 6 so far 🏎️",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 18-59 - The cleanest escape in GTA 6 so far"
+  },
+  {
+   "id": "local-20261118-185131-06",
+   "source": "earlier_182820_piece_000.mp4",
+   "start": 1520.25,
+   "duration": 30.0,
+   "score": 0.585,
+   "intensity": "big",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD//gAPTGF2YzYzLjEuMTAyAP/bAEMACAwMDgwOEBAQEBAQExITFBQUExMTExQUFBUVFRkZGRUVFRQUFRUYGBkZGxwbGhoZGhwcHh4eJCQiIioqKzMzPv/EAIsAAAIDAQEBAAAAAAAAAAAAAAIBAwQABQYHAQADAQEBAQAAAAAAAAAAAAADAgEEAAUGEAACAQIEAwYEBAcBAAAAAAAAAQIRAwQSEyFRMUEFYRShgZFx0fAyk7EiI9JigwZSQiTxEQACAgEDBAICAwEAAAAAAAAAAQIRAzESIZFRQWEiExSBcVLRBP/AABEIAMAAbAMBIgACEQADEQD/2gAMAwEAAhEDEQA/APkY6gmJZxMmGmQIlRLOJaiqCI6xkgqgiENZaGC2IEdMlCBqYAY4wIwRrFLAg2AYrHaGiVESJUdYhICECcmFQII2AOMIRgRhTAjBHsgjCGMDLkiuWplVnnph5BImRXRMmWwNEoBqkdRkGQwRAjlMCYEchhGEMIMwjDiF1upFQlSDoeQpj3ZXoMmoKg+4pECS0BoOpFAoKhOkS5RtwyKNAC84lZoMmPRCIMEJYJoEIxi2Do6qtvih5T0eG7Gx2KtxuWo2nGazKt61F0q4puMpJqrTSrzL7/tntbrYj+Lb/iB/jYvfUU8ZlMrbboeon2Hj7X3W4r+pD5lPwl2zOGdJVlTmn+RzwY0vPUa2cZ2JLgBoSfVfXod65FNM50eYJQh76hJJw1KuhNdY+fyHpyXVF6RXbCLHD31JyVHB9xE7cu4uGoaY4ovv1F3M5+jLuFoy4o6FBD/UkLuZQ0ZdwtGXFHbjK1Ff7P4wg/zZWnRydOXwS8lsTYiu15X6Z2sP2ljrNqNu3fxMYRqlG3KkV1ov0vq/MkfbXadX/wBmJ+Dnv67HoLOCwULdjPaUndhF7yuc3lrTLNU5nAxEcLB/t2ZSq5Kn66qnr3oEs0bap8eg/wCPP4NuKU9H/vBVl2njpfdibsvjIr+Lu5oylJyyuu53MNhsNirebLkks0ZRrL7ounV+/eeYuRpOUV0k17Mfcp3SegNwcWvPPg6DxjuVWVblbK1uVLbUZVZ6WzYjil+3Q8iWTY9KRZN7ql+r79jiUbZDKLidW9Y0nRlfQb5B4ZrG04aOaSLcklZkhwiepiu0AmnHmnrQNKI0JZXzSrzdFLyZbcSrkbZ6U8XFllGl/BYUl/mvwolKXN/+eRbcCDKzLLG0dR9D7PuRxUMks1t27cMsq3Gm1HZKMVvV028z5rfxV+1ccJueaEqSjNutVx4MtwxWIt0yXrkKcssmqexUklck5TWaUnVye7b4tsx7L/qO59t1nawnaK0UpKlKqSinvzknxq23Xocmc80pS5Vbfux55R3Umnty/l5e3QrybdW929wkYbH45JKdpd0Nou4TESsN06lVbxI09wz/AOePxtagXLclfe+h25Yurq1UDxa4HLbBbFnhjDRIiyyZ0ZYlSVCKNxHOHFgvsaGlOco1fF2dlOpZikcaM6M6kZ1PYxZlkVBoy3yd60WHEruBYzETYOepzOIM5niJcEbxE+Efr1MFMCdQB8jnrET4Ik1pPgFUWxW0XVyIepDqvuB1H3Gxu1HjQzNa8lrmJlTWlwRtaT6Iz5aeljx41Jmw4lXUfBG1X3HnPGw1ovFq3PocfWlwQvETXRBIXBlUqdnotShFqHD8TPhHz+YPiZ8I/XqHeWwjmisINgmigLZkTIgJEPEGyUQhB2gNgsaBY0ZmWwjGBM8h0JgBAMzscwjGAnEjI6kjIT2ZIjYYaIkSFiBbJRAiDMUw0CMzSKGCYRmkFQgRgmVjmEYwIpMyFkxG0fRTiY0wQwQhIo5sIRhBHElmMMxmkgqMIQjHIMkYQhGZhKGIEwItFxkbGAe/KdmJRMECGdBiyQJg6GoanoDSEYIRjmbIoEQYjDIMRgkgJmY5GIkoKgIp/9k=",
+   "size_mb": 5.1,
+   "title": "This GTA 6 clip is pure madness 😳",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 19-00 - This GTA 6 clip is pure madness"
+  }
+ ]
+}

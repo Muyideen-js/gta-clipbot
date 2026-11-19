@@ -1,0 +1,132 @@
+name: Live clip
+
+# Records a live stream on GitHub's servers and clips it as it goes.
+# Started by "Watch streamers" (or by hand). A run can last up to ~6 hours,
+# so after 5.5 hours it stops and starts a fresh run that carries on.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Live stream link (YouTube watch link or twitch.tv/name)"
+        required: true
+      streamer:
+        description: "Name as written in streamers.json (for credit and hashtags)"
+        required: false
+        default: ""
+      max_minutes:
+        description: "Minutes to record in this run"
+        required: false
+        default: "330"
+      upload:
+        description: "Upload to YouTube (false = only make clips)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write   # releases with the clips + saved schedule
+  models: read      # AI titles
+  actions: write    # start the follow-up run
+
+concurrency:
+  group: live-clip
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg and fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core >/dev/null
+          ffmpeg -version | head -1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: pip install -q -U -r requirements.txt
+
+      - name: YouTube cookies
+        env:
+          YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
+        run: |
+          mkdir -p ~/.clipbot
+          if [ -n "$YTDLP_COOKIES" ]; then printf '%s\n' "$YTDLP_COOKIES" > ~/.clipbot/cookies.txt; echo "cookies ready"; else echo "no cookies secret (YouTube may block)"; fi
+
+      - name: Streamer settings
+        env:
+          STREAMER: ${{ inputs.streamer }}
+        run: |
+          python - <<'EOF'
+          import json, os
+          s = next((x for x in json.load(open("streamers.json")) if x["name"] == os.environ["STREAMER"]), {})
+          with open(os.environ["GITHUB_ENV"], "a") as fh:
+              fh.write(f"CREDIT_LINE={s.get('credit', '')}\nEXTRA_TAGS={s.get('tags', '')}\n")
+          EOF
+
+      - name: Record and clip
+        env:
+          URL: ${{ inputs.url }}
+          MAX_MIN: ${{ inputs.max_minutes }}
+          NO_UPLOAD: ${{ inputs.upload == false && '--no-upload' || '' }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          CLIPS_DIR: ${{ github.workspace }}/clips_out
+          LAYOUT: ${{ vars.LAYOUT || 'blur' }}
+          DAILY_UPLOAD_CAP: ${{ vars.DAILY_UPLOAD_CAP || '6' }}
+          POST_INTERVAL_MIN: ${{ vars.POST_INTERVAL_MIN || '30' }}
+          POST_LEAD_MIN: ${{ vars.POST_LEAD_MIN || '5' }}
+          POST_START_HOUR: ${{ vars.POST_START_HOUR || '8' }}
+          POST_END_HOUR: ${{ vars.POST_END_HOUR || '23.5' }}
+          POST_TZ: ${{ vars.POST_TZ || 'Africa/Lagos' }}
+        run: |
+          python tools/live_clipper.py "$URL" --quality 1080 --chunk-min 20 --shorts-per-chunk 4 \
+            --long-minutes 30 --publish schedule --max-uploads 6 --max-minutes "$MAX_MIN" $NO_UPLOAD
+          echo "---- log"; cat work/live.log || true
+
+      - name: Publish the clips as a release
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STREAMER: ${{ inputs.streamer }}
+        run: |
+          python tools/package_release.py clips_out release_files
+          n=$(ls release_files/*.mp4 2>/dev/null | wc -l)
+          if [ "$n" -gt 0 ]; then
+            tag="clips-$(date -u +%Y%m%d-%H%M)-${{ github.run_id }}"
+            gh release create "$tag" release_files/* \
+              --title "${STREAMER:-Stream} clips $(date -u '+%d %b %H:%M') UTC ($n clips)" \
+              --notes "Clips made from ${{ inputs.url }}. Files starting with Post_by_hand were NOT uploaded by the bot. Each .txt has the title, description and TikTok caption. On a PC, run tools/get_clips.py to put them in Desktop\\GTA Clips."
+          else
+            echo "No clips this run."
+          fi
+
+      - name: Save schedule and upload counts
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Live clip run ${{ github.run_id }} [skip ci]"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+
+      - name: Continue if the stream is still live
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f work/still_live ]; then
+            gh workflow run live-clip.yml -f url="$(cat work/still_live)" -f streamer="${{ inputs.streamer }}" \
+              -f max_minutes="${{ inputs.max_minutes }}" -f upload="${{ inputs.upload }}"
+            echo "Started a follow-up run."
+          fi

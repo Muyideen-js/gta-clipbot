@@ -1,0 +1,40 @@
+name: Watch streamers
+
+# Every 10 minutes: is anyone from streamers.json live and playing GTA?
+# If so (and nothing is recording yet), start "Live clip".
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: watch-streamers
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: pip install -q -U yt-dlp
+      - name: YouTube cookies
+        env:
+          YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
+        run: |
+          mkdir -p ~/.clipbot
+          if [ -n "$YTDLP_COOKIES" ]; then printf '%s\n' "$YTDLP_COOKIES" > ~/.clipbot/cookies.txt; fi
+      - name: Check streamers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/cloud_watch.py

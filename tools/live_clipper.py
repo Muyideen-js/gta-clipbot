@@ -52,7 +52,8 @@ def load_env() -> None:
                     k, v = ln.split("=", 1)
                     os.environ.setdefault(k.strip(), v.strip())
     else:
-        log(f"No {SECRETS}: clips will be made but not uploaded.")
+        if not os.environ.get("YT_REFRESH_TOKEN"):
+            log(f"No {SECRETS} and no YouTube keys: clips will be made but not uploaded.")
     # ffmpeg: use the one on PATH, else the bundled imageio-ffmpeg binary.
     if not os.environ.get("FFMPEG") and not shutil.which("ffmpeg"):
         try:
@@ -136,7 +137,8 @@ def process(piece_ts: str, args, extra: list[str]) -> None:
     cmd = [sys.executable, "-m", "clipper.run", "--inputs", lst,
            "--work", os.path.join(os.path.dirname(mp4), "work"),
            "--manifest-dir", os.path.join(ROOT, "manifests"),
-           "--publish", args.publish, "--max-uploads", str(args.max_uploads), *extra]
+           "--publish", args.publish, "--max-uploads", str(args.max_uploads),
+           *(["--upload", "false"] if args.no_upload else []), *extra]
     res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     for ln in res.stdout.splitlines():
         if any(k in ln for k in ("title (", "uploaded:", "saved to", "Done", "quota", "best-of", "clip failed")):
@@ -155,6 +157,10 @@ def main() -> int:
     ap.add_argument("--publish", choices=["schedule", "now", "private"], default="schedule")
     ap.add_argument("--max-uploads", type=int, default=6)
     ap.add_argument("--resume", default="", help="continue in an earlier recording folder")
+    ap.add_argument("--max-minutes", type=float, default=0,
+                    help="stop recording after this long (GitHub runs are limited to 6 h); "
+                         "writes work/still_live if the stream is still going")
+    ap.add_argument("--no-upload", action="store_true", help="make clips but don't upload")
     ap.add_argument("--quality", type=int, default=1080, choices=[720, 1080],
                     help="1080 uses about 2.5 GB of data per hour, 720 about 1.3 GB")
     args = ap.parse_args()
@@ -212,6 +218,8 @@ def main() -> int:
                 log(f"Piece finished: {os.path.basename(p)}, queued for clipping")
                 jobs.put(p)
 
+    deadline = time.time() + args.max_minutes * 60 if args.max_minutes else None
+    out_of_time = False
     while True:
         src = None
         for attempt in range(30):          # keep trying for up to ~30 minutes
@@ -265,6 +273,15 @@ def main() -> int:
                             rec.kill()
                         open(current[-1] + ".done", "w").close()   # don't clip the silent part
                         break
+                if deadline and time.time() > deadline:
+                    log(f"Reached the {args.max_minutes:.0f}-minute limit for this run. Stopping the recorder...")
+                    out_of_time = True
+                    rec.terminate()
+                    try:
+                        rec.wait(timeout=20)
+                    except subprocess.TimeoutExpired:
+                        rec.kill()
+                    break
                 if time.time() - progress["at"] > 90:
                     log("Recording stopped moving for 90 s (connection problem). Restarting the recorder...")
                     rec.terminate()
@@ -279,6 +296,12 @@ def main() -> int:
             rec.wait(timeout=30)
             break
         start_no = len(glob.glob(os.path.join(work, "piece_*.ts")))
+        if out_of_time:
+            if live_status(args.url) in ("is_live", "unknown"):
+                with open(os.path.join(ROOT, "work", "still_live"), "w", encoding="utf-8") as fh:
+                    fh.write(args.url)
+                log("The stream is still live: a new run will continue it.")
+            break
         if live_status(args.url) not in ("is_live", "unknown"):
             log("Stream ended.")
             break

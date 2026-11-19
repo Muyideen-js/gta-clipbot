@@ -1,0 +1,82 @@
+{
+ "run_id": "local-20261119-132954",
+ "created": "2026-11-19T12:29:54+00:00",
+ "repo": "",
+ "settings": {
+  "clips": 6,
+  "clip_seconds": 30.0,
+  "layout": "blur",
+  "upload": true
+ },
+ "sources": [
+  {
+   "name": "piece_000.mp4",
+   "duration": 93.6,
+   "width": 1280,
+   "height": 720
+  }
+ ],
+ "clips": [
+  {
+   "id": "local-20261119-132954-01",
+   "source": "piece_000.mp4",
+   "start": 0.0,
+   "duration": 30.0,
+   "score": 0.0,
+   "intensity": "solid",
+   "youtube": {
+    "status": "uploaded",
+    "id": "XPVoxA20BkI",
+    "privacy": "private",
+    "studio_url": "https://studio.youtube.com/video/XPVoxA20BkI/edit",
+    "watch_url": "https://youtube.com/shorts/XPVoxA20BkI",
+    "publish_at": "2026-11-19T13:00:00Z",
+    "goes_live": "Thu 19 Nov, 14:00 (Lagos time)"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 26.0,
+   "title": "How did this even happen in GTA 6? 😂",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "IShowSpeed",
+    "Speed",
+    "GTA6Clips",
+    "Gaming"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Uploaded by bot\\19 Nov 13-34 - How did this even happen in GTA 6"
+  },
+  {
+   "id": "local-20261119-132954-02",
+   "source": "piece_000.mp4",
+   "start": 50.0,
+   "duration": 30.0,
+   "score": 1.0,
+   "intensity": "massive",
+   "youtube": {
+    "status": "error",
+    "error": "HTTPSConnectionPool(host='www.googleapis.com', port=443): Max retries exceeded with url: /upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AFy3sg31y3W5UrTMeQjSj5v8-fbJpdTs3Wr87DhZ3ufPfJzHfhoFRhbMQldwuoUq0-Hm6oUs5gp-RwQPLwJ4MAo2UzJAQyuGz56hZhg6VisLd_U (Caused by NameResolut"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD//gAPTGF2YzYzLjEuMTAyAP/bAEMACAwMDgwOEBAQEBAQExITFBQUExMTExQUFBUVFRkZGRUVFRQUFRUYGBkZGxwbGhoZGhwcHh4eJCQiIioqKzMzPv/EAJIAAAEFAQEBAAAAAAAAAAAAAAQFBgIDBwEACAEAAwEBAQAAAAAAAAAAAAAAAgEDBAAFEAABAwMCAwUFAwwDAQEAAAABAgARAwQhEjETUQVBcSJhgRShkdEyUgbBFUJUI/Hw0rGSckOiRDPCsmIRAAICAQMDBQEBAQAAAAAAAAABEQIhEjFRA0FhkSITgaFxsQT/wAARCADAAGwDASIAAhEAAxEA/9oADAMBAAIRAxEAPwDHuG5cMtW4bnw36J5wi8MuXDLWeE/cNgMR+GXeikS1LhMhCIfBJgQti+KtyGviHFYBYlpGyab5w2tGm+cNoGRI4ZdqUQ1PhvvDaZwKTh15Z3DfuGwgKS7huWhqnCfuE7SZoEzQ/cNqOh90PpOE7Q5BDUND7ofScA6X3Sz9D9oYhAOh90M/Q+KTAabGJqoS6uIlpl7WKZhtn2tWrdxdiyRoAhTnpDb1tdyMlnG6HNrWOB56X4pZGl3CnLOSUCXofOG15NB2Gg1qHpG9w33Q1sUH0277WLSIeh90NXNGHQUQy1CgTyAGl3NUJSXO8r8MFsW5vCZy5WsUSKbqsFEtuK3dyllZdUZeZsvAVTqFLu45Y4Thw0sZGfRCUM5CYcAGSHpbM6PSAwqtwlDquqvDSS87u+oEkiXFsoPoXqJ3Z6LlKnkKbszu3BbXJJGXHUxmjKhTCWnBfrdWpLKWnBehMAzDqqiJefrBUXofWABLz4nLBsoijTD6Q5EvoLEMkkw+uLnDCTjRvab/APSKn+vyffaeofpNX/X5N0VbVG6GP7M/ZWl9l6GFyhsrqXlTC61RXfHyaabIqMmS30LbydqbUTkPorwvQ6WMAWA5MtNqtH0qIb99lQ/ex8gSB2ufs4Xog88jcoKuEjNxUT3R8nI1b0/8ipHp8m4vZI7Gm3tSlZ0lFSgFRgduTExIaeldkEm3gQ6luusIqePzO7TT0ql9ge9p9HqlxT4kqNScJKuwz2O+zvqtPjqWCqTISoxmROOcFw1V4KwySul0/sfzYx6agfmvQLdIvKaKlNJ8YJAMTgxPd5u32LU6LT4AyZyixQFCUTOGaenJ+yn4Fvyn09JX4wSByxnzLM9kT3eQ2DFui7L0CSbEayukVVpCl1eJEGmRPLIgbn3N3+z9zyFVVOpSlFSVwFCogqB+kYidOeY9WtUa9xS00lquE8VOCs/UFYmSTzlhVdSsJxL2WpHaU02tuY5NITQHaPjhkJppIgoA8xl52ldzZrq0RxfBCjVMqpg4Agg6TuzqF/dIk1KpqDswBvzmJ8murf4nF8NqVDTx9BKg9hRTLS+r9T/JtNGlMmpISYwIiZHa0FF3eLEICjJVKu/bYRhyubC46kECupNPSIlJlR7cp0wM8i5fIr8jVIFjpfUldSSoKSPCAcCIzDzj7xpH5QWk5ASnGwGPLfvOW9bCwqdM1qRWXVUrdKUoT8dai2zfWd5cXNS5XbrXqjHgkaQBsDtjvb7bjjIyaQ4igAcrKQZ+Hb2smpTNGsolaKoAgncE7CQD2bMm4pkFGqmpB4kq1JIATHMDnyLGroApeFVNZ5JM/g5hDy+714DcLBMBSYShKR4iN5xjnjd6AqulKtIRCiJjAMDc5fztTqVUFOlWjP1TEectzprVlJGpQqKA+olcx6Fk/bv/AKDuaku9BJQgo1citM98NpV+uoo1Cgp1FO5ER/Nsaolc/Vpjbf4BpxoL5k+hb1LwhZHpT6ekg0+NUrkJIR4cgT3mQAMcstwLRxkUVq1kUEaSpI8OoCfLJPMty8O3SrUmjTBiJge6Pm+FKSko0pCCdRSBCZ5w5W+R2TVljbnyer0+p/yqiVul1G8aosof147fowbSjb1buglKlhPjJTKo+kwMlvtFtboMpRJ831NBEymmmRmQAI7N+5lEpR/+j7h83XqXreyxlJLnYxfzCLB8A06+vkWNBVYiQkpETBMmMefbDIKioti/eZWqlRpBX5xWR6QJ98MVvkUTsED712if8Nb10n/0zbP7w0Lu4RSQKn6wn64SBicETJ5D3vJadqKmqaiEQMajEn4PtpqRXpKEghaSO8HDu4gFVbfY3utbIryRCVH4Hv5No3FkUE6qVMkdukAx8G7guN3YrTUTChqHvHcXldZGZr7PTE4APaP2yH5RSjBppjbYD3iG6bqxjxIhQ5/gRzbbWgpOkwPIuLnyMCVwjPhI/tV8wWEpAnFSoByhJ/EMqonvT5jb5Ojhn7QPfLEUGvppkxy5z+DI4KREk9zo49JGAqR++Ng/G6pntPux5PXVp7k/cp/DlVRT4RgQwZfq1enMlQAjtaQeq2CDCrmmP6vk1CWxTPcWF1EUUKWswlIJPPHLzeOX1arcLUshXiMgHUYHYPQNzdX6vbVRTp0KwUkSpRAUM7ATA9Wz1XYP+ZWNsreqlcZjJJ2zgT/1v2VH0LMtQpdakClWVpGx7SHA18EiuoHvXJDU+m3NJNzTNa4000eI6isgwMCIPa+tWBqzN1XVo6o8Kh6fCXRUEZQmR5HPwO/o2j+Vum/pFP8ApV/C5p63Yo2uURyOv+F5/oMXOKUyRvyPb5ftYlShTuk4ASv7BjP9pP8A8nPJwTd0LohQqoXB2yJHfGR3vxppMCUgDtAyfcD72oGhuVrRSJAMCcjMeo7GjKQkGDI/fyb5XQpqxqJzE6SIHPtlhm10HT9UfnJ2Lk6BBrmHFz2bEI1+qEF5Lc/9hen9QqDSQ80uMqLqikITn59dtMCXUm6nBTUex1kQ3EgoCWk3ETh8CkBPofHIbsJLqo++lriG/EnDYHS07N+DZzBsi8F26mJL7LRIsmGBXuAgFnHAbN6hWiQzqpE2JN3dayW1aipLIqLksAmXbSNWOPsuL80FqLNZcSZcX5iKTzkN3FzTuxgpqNA6QJh6EKeGxOjJ2ekgQGALYmmk4cItUkOWGwBr3NcISXnF1VNRRaxcXWsbtE8JL1VrBBsSFgsWGtqSlj6UukAyJb8z1IS46UucBSBPzP0odRSljA5BXIbhmhCGTTppJYtBJj06N4YegqqiGxbFOlIhrhWXBhijxcufFaQSXCS1IRlxUXVqL64P1IMREqLqJLscWxFJJcMu5ySJagcgsl8Zy6eGEwaGmdktStZUoNOAbm6fR1KDjYoh8WqYQGow6qadKQ7g8VjQjkOGl2vzEZ//2Q==",
+   "size_mb": 29.5,
+   "title": "Nobody expected this in GTA 6 😭",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "IShowSpeed",
+    "Speed",
+    "GTA6Clips",
+    "Gaming"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\19 Nov 13-41 - Nobody expected this in GTA 6"
+  }
+ ]
+}

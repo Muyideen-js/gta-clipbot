@@ -1,0 +1,48 @@
+{
+ "run_id": "local-20261118-190055",
+ "created": "2026-11-18T18:00:55+00:00",
+ "repo": "",
+ "settings": {
+  "clips": 6,
+  "clip_seconds": 30.0,
+  "layout": "blur",
+  "upload": true
+ },
+ "sources": [
+  {
+   "name": "piece_000.mp4",
+   "duration": 48.7,
+   "width": 1280,
+   "height": 720
+  }
+ ],
+ "clips": [
+  {
+   "id": "local-20261118-190055-01",
+   "source": "piece_000.mp4",
+   "start": 1.0,
+   "duration": 30.0,
+   "score": 1.0,
+   "intensity": "massive",
+   "youtube": {
+    "status": "capped"
+   },
+   "telegram": false,
+   "thumb": "data:image/jpeg;base64,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",
+   "size_mb": 52.5,
+   "title": "Wait for it… GTA 6 moment 👀",
+   "description": "Raw GTA 6 gameplay highlight.",
+   "hashtags": [
+    "GTA6",
+    "Shorts",
+    "GTAVI",
+    "TypicalGamer",
+    "GTA6Clips",
+    "Gaming",
+    "GrandTheftAuto"
+   ],
+   "caption_source": "template",
+   "pc_folder": "C:\\Users\\DELL\\Desktop\\GTA Clips\\Post by hand\\18 Nov 19-03 - Wait for it GTA 6 moment"
+  }
+ ]
+}
