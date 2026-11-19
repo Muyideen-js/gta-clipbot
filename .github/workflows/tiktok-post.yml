@@ -1,0 +1,54 @@
+name: TikTok post
+
+# Every 30 min: posts the next clip to TikTok if one is due.
+# 6 or 7 posts a day, spread between 9:00 and 23:00 Lagos time.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+    inputs:
+      now:
+        description: "Post one clip right now"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # save which clips were posted
+
+concurrency:
+  group: tiktok-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests tzdata
+
+      - name: Post to TikTok if due
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          TIKTOK_PRIVACY: ${{ vars.TIKTOK_PRIVACY || 'PUBLIC_TO_EVERYONE' }}
+          TIKTOK_START_HOUR: ${{ vars.TIKTOK_START_HOUR || '9' }}
+          TIKTOK_END_HOUR: ${{ vars.TIKTOK_END_HOUR || '23' }}
+          POST_TZ: ${{ vars.POST_TZ || 'Africa/Lagos' }}
+          NOW: ${{ inputs.now && '--now' || '' }}
+        run: python tools/tiktok_post.py $NOW
+
+      - name: Save what was posted
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/tiktok_posted.json 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git commit -q -m "TikTok post log [skip ci]"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
