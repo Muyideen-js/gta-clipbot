@@ -136,4 +136,7 @@ jobs:
             gh workflow run live-clip.yml -f url="$(cat work/still_live)" -f streamer="${{ inputs.streamer }}" \
               -f max_minutes="${{ inputs.max_minutes }}" -f upload="${{ inputs.upload }}"
             echo "Started a follow-up run."
+          else
+            # Stream over: look for the next live streamer right away (GitHub's timer can lag).
+            gh workflow run watch-streamers.yml && echo "Asked the watcher to look for the next stream."
           fi
