@@ -1,6 +1,6 @@
 {
- "run_id": "44681703328",
- "created": "2026-11-20T11:07:11+00:00",
+ "run_id": "44727196448",
+ "created": "2026-11-20T12:41:30+00:00",
  "repo": "Muyideen-js/gta-clipbot",
  "settings": {
   "clips": 0,
@@ -11,7 +11,7 @@
  "sources": [
   {
    "name": "full_stream.mp4",
-   "duration": 19714.2,
+   "duration": 4385.6,
    "width": 1920,
    "height": 1080
   }
@@ -19,7 +19,7 @@
  "clips": [],
  "long": [
   {
-   "id": "44681703328-long-1",
+   "id": "44727196448-long-1",
    "source": "full_stream.mp4",
    "youtube": {
     "status": "skipped"
@@ -37,10 +37,10 @@
     "Gaming"
    ],
    "thumb_text": "INSANE GTA 6 MOMENTS",
-   "duration": 5250.3,
+   "duration": 5250.2,
    "segments": 30,
-   "size_mb": 1131.1,
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/20 Nov 11-21 - GTA 6 Best Moments 88 Minutes of Pure Chaos"
+   "size_mb": 794.3,
+   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/20 Nov 12-55 - GTA 6 Best Moments 88 Minutes of Pure Chaos"
   }
  ]
 }
