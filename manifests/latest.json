@@ -1,6 +1,6 @@
 {
- "run_id": "45110796374",
- "created": "2026-11-23T06:55:13+00:00",
+ "run_id": "45480525111",
+ "created": "2026-11-24T22:37:21+00:00",
  "repo": "Muyideen-js/gta-clipbot",
  "settings": {
   "clips": 0,
@@ -11,7 +11,7 @@
  "sources": [
   {
    "name": "full_stream.mp4",
-   "duration": 9056.2,
+   "duration": 7771.9,
    "width": 1920,
    "height": 1080
   }
@@ -19,28 +19,28 @@
  "clips": [],
  "long": [
   {
-   "id": "45110796374-long-1",
+   "id": "45480525111-long-1",
    "source": "full_stream.mp4",
    "youtube": {
     "status": "skipped"
    },
    "telegram": false,
-   "title": "GTA 6 Best Moments: 30 Minutes of Pure Chaos",
+   "title": "GTA 6 Best Moments: 78 Minutes of Pure Chaos",
    "description": "The best moments from the stream, back to back.",
    "hashtags": [
     "GTA6",
     "Shorts",
     "GTAVI",
     "GTA6Gameplay",
-    "xQc",
+    "KaiCenat",
     "GTA6Clips",
     "Gaming"
    ],
    "thumb_text": "INSANE GTA 6 MOMENTS",
-   "duration": 1800.0,
+   "duration": 4688.1,
    "segments": 30,
-   "size_mb": 809.3,
-   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/23 Nov 07-10 - GTA 6 Best Moments 30 Minutes of Pure Chaos"
+   "size_mb": 1205.6,
+   "pc_folder": "/home/runner/work/gta-clipbot/gta-clipbot/clips_out/Post by hand/24 Nov 22-51 - GTA 6 Best Moments 78 Minutes of Pure Chaos"
   }
  ]
 }
